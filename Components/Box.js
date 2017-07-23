@@ -1,10 +1,19 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View } from 'react-native';
 
 export class Box extends React.Component {
+    static propTypes = {
+        children: PropTypes.node,
+        direction: PropTypes.string,
+        expand: PropTypes.bool,
+    };
+
     render() {
-        const props = {
+        const {
             direction,
+            expand,
+            children,
             ...rest
         } = this.props;
 
@@ -13,13 +22,13 @@ export class Box extends React.Component {
             ...rest
         };
 
-        if (this.props.expand) {
+        if (expand) {
             style.justifyContent = 'space-between';
         }
 
         return (
             <View style={style}>
-                {this.props.children}
+                {children}
             </View>
         );
     }

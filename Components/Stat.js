@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ProgressViewIOS, Picker } from 'react-native';
 import {
     Text,
@@ -10,6 +11,10 @@ import { HBox, VBox } from './Box';
 
 
 export class StatBlock extends React.Component {
+    static propTypes = {
+        value: PropTypes.number,
+    };
+
     render() {
         return (
             <HBox>
@@ -25,6 +30,13 @@ export class StatBlock extends React.Component {
 
 
 export class Stat extends React.Component {
+    static propTypes = {
+        name: PropTypes.string,
+        skill: PropTypes.bool,
+        used: PropTypes.bool,
+        value: PropTypes.number,
+    };
+
     render() {
         let left = null;
 
@@ -50,6 +62,13 @@ export class Stat extends React.Component {
 
 
 export class Bar extends React.Component {
+    static propTypes = {
+        color: PropTypes.string,
+        max: PropTypes.number,
+        name: PropTypes.string,
+        value: PropTypes.number,
+    };
+
     constructor(props) {
         super(props);
         this.state = {

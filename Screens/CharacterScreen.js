@@ -1,5 +1,4 @@
 import React from 'react';
-import { View } from 'react-native';
 import {
     Card,
     Text,
@@ -118,12 +117,12 @@ export default class CharacterScreen extends React.Component {
                     <Card title="Skills">
                         <Stat
                             name="Accounting"
-                            value="5"
+                            value={5}
                             skill
                         />
                         <Stat
                             name="Anthropology"
-                            value="1"
+                            value={1}
                             skill
                         />
                     </Card>
