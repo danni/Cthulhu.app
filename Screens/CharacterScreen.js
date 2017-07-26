@@ -8,7 +8,7 @@ import {
     ListItem,
 } from 'react-native-elements';
 
-import { toggleSkillUsed } from '../Reducers/character';
+import { toggleSkillUsed, barChanged } from '../Reducers/character';
 import { Stat, Bar } from '../Components/Stat';
 import { HBox, VBox } from '../Components/Box';
 
@@ -42,24 +42,28 @@ export default class CharacterScreen extends React.Component {
                                 value={char.hp.current}
                                 max={char.hp.max}
                                 color="darkred"
+                                barChanged={(value) => this.props.dispatch(barChanged('hp', value))}
                             />
                             <Bar
                                 name="Sanity"
                                 value={char.san.current}
                                 max={char.san.max}
                                 color="purple"
+                                barChanged={(value) => this.props.dispatch(barChanged('san', value))}
                             />
                             <Bar
                                 name="Luck"
                                 value={char.luck.current}
                                 max={char.luck.max}
                                 color="blue"
+                                barChanged={(value) => this.props.dispatch(barChanged('luck', value))}
                             />
                             <Bar
                                 name="Magic Points"
                                 value={char.mp.current}
                                 max={char.mp.max}
                                 color="green"
+                                barChanged={(value) => this.props.dispatch(barChanged('mp', value))}
                             />
 
                             <ListItem

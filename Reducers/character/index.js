@@ -60,10 +60,16 @@ const initial = fromJS({
 
 // Actions
 export const TOGGLE_SKILL_USED = 'character/TOGGLE_SKILL_USED';
-
 export const toggleSkillUsed = (skill) => ({
     type: TOGGLE_SKILL_USED,
     skill,
+});
+
+export const BAR_CHANGED = 'character/BAR_CHANGED';
+export const barChanged = (bar, value) => ({
+    type: BAR_CHANGED,
+    bar,
+    value,
 });
 
 
@@ -76,12 +82,21 @@ export default (state = initial, action) => {
                     !state.getIn(['skills', action.skill, 'used']))
             break;
 
+        case BAR_CHANGED:
+            state = state
+                .setIn([action.bar, 'current'], action.value);
+            break;
+
         default:
             break;
     }
 
     // Derive calculated values
     return state
+        // Max HP is (CON + SIZ) / 10. pg 49.
+        .setIn(['hp', 'max'], (state.getIn(['stats', 'con']) + state.getIn(['stats', 'siz'])) / 10)
+        // Max SAN is 99 - Cthulhu Mythos
         .setIn(['san', 'max'], 99 - state.getIn(['skills', 'mythos', 'current']))
+        // POW / 5. pg 64
         .setIn(['mp', 'max'], state.getIn(['stats', 'pow']) / 5);
 };

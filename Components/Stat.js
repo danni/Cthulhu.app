@@ -71,6 +71,7 @@ export class Stat extends React.Component {
 
 export class Bar extends React.Component {
     static propTypes = {
+        barChanged: PropTypes.func,
         color: PropTypes.string,
         max: PropTypes.number,
         name: PropTypes.string,
@@ -85,9 +86,19 @@ export class Bar extends React.Component {
     }
 
     onPress() {
+        if (!this.props.barChanged) {
+            return;
+        }
+
         this.setState({
             open: !this.state.open,
         });
+    }
+
+    onBarChanged(value) {
+        this.props.barChanged(value);
+
+        this.setState({ open: false })
     }
 
     render() {
@@ -118,7 +129,10 @@ export class Bar extends React.Component {
         }
 
         return (
-            <Picker selectedValue={this.props.value}>
+            <Picker
+                onValueChange={(value) => this.onBarChanged(value)}
+                selectedValue={this.props.value}
+            >
                 {range(0, this.props.max + 1).map((value) => (
                     <Picker.Item
                         value={value}
