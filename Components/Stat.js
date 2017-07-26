@@ -33,9 +33,16 @@ export class Stat extends React.Component {
     static propTypes = {
         name: PropTypes.string,
         skill: PropTypes.bool,
+        toggleSkillUsed: PropTypes.func,
         used: PropTypes.bool,
         value: PropTypes.number,
     };
+
+    onLeftPress() {
+        if (this.props.skill && this.props.toggleSkillUsed) {
+            this.props.toggleSkillUsed();
+        }
+    }
 
     render() {
         let left = null;
@@ -55,6 +62,7 @@ export class Stat extends React.Component {
                 title={this.props.name}
                 leftIcon={left}
                 rightIcon={right}
+                leftIconOnPress={() => this.onLeftPress()}
             />
         );
     }

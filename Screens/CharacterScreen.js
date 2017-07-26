@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
     Card,
     Text,
@@ -6,71 +8,83 @@ import {
     ListItem,
 } from 'react-native-elements';
 
+import { toggleSkillUsed } from '../Reducers/character';
 import { Stat, Bar } from '../Components/Stat';
 import { HBox, VBox } from '../Components/Box';
 
 
+@connect((state) => ({
+    character: state.character.toJS(),
+}))
 export default class CharacterScreen extends React.Component {
-    static navigationOptions = {
-        title: 'Maddy Tillinghast',
-    };
+    static propTypes = {
+        character: PropTypes.object,
+        dispatch: PropTypes.func,
+    }
+
+    static navigationOptions = (nav) => ({
+        title: nav.navigation.character.name,
+    });
 
     render() {
+        const char = this.props.character;
+        const skills = Object.entries(char.skills);
+
         return (
             <HBox>
                 <VBox flex={2}>
                     <Card>
-                        <Text h4>Maddy Tillinghast</Text>
+                        <Text h4>{char.name}</Text>
 
                         <List>
                             <Bar
                                 name="Hit Points"
-                                value={9}
-                                max={9}
+                                value={char.hp.current}
+                                max={char.hp.max}
                                 color="darkred"
                             />
                             <Bar
                                 name="Sanity"
-                                value={80}
-                                max={97}
+                                value={char.san.current}
+                                max={char.san.max}
                                 color="purple"
                             />
                             <Bar
                                 name="Luck"
-                                value={65}
-                                max={99}
+                                value={char.luck.current}
+                                max={char.luck.max}
                                 color="blue"
                             />
                             <Bar
                                 name="Magic Points"
-                                value={16}
-                                max={16}
+                                value={char.mp.current}
+                                max={char.mp.max}
                                 color="green"
                             />
 
                             <ListItem
                                 rightTitle="Occupation"
-                                title="Dilettante"
+                                title={char.occupation}
                                 hideChevron
                             />
                             <ListItem
                                 rightTitle="Age"
-                                title="32"
+                                title={char.age}
                                 hideChevron
                             />
                             <ListItem
                                 rightTitle="Sex"
-                                title="Female"
+                                title={char.sex}
                                 hideChevron
                             />
                             <ListItem
                                 rightTitle="Birthplace"
-                                title="Salem, MA"
+                                title={char.birthplace}
                                 hideChevron
                             />
                             <ListItem
                                 rightTitle="Residence"
-                                title="Arkham, MA"
+                                title={char.residence}
                                 hideChevron
                             />
                         </List>
@@ -81,50 +95,50 @@ export default class CharacterScreen extends React.Component {
                     <Card title="Characteristics">
                         <Stat
                             name="Strength"
-                            value={45}
+                            value={char.stats.str}
                         />
                         <Stat
                             name="Constitution"
-                            value={40}
+                            value={char.stats.con}
                         />
                         <Stat
                             name="Size"
-                            value={50}
+                            value={char.stats.siz}
                         />
                         <Stat
                             name="Dexterity"
-                            value={55}
+                            value={char.stats.dex}
                         />
                         <Stat
                             name="Appearance"
-                            value={60}
+                            value={char.stats.app}
                         />
                         <Stat
                             name="Education"
-                            value={60}
+                            value={char.stats.edu}
                         />
                         <Stat
                             name="Intelligence"
-                            value={70}
+                            value={char.stats.int}
                         />
                         <Stat
                             name="Power"
-                            value={80}
+                            value={char.stats.pow}
                         />
                     </Card>
                 </VBox>
                 <VBox flex={2}>
                     <Card title="Skills">
-                        <Stat
-                            name="Accounting"
-                            value={5}
-                            skill
-                        />
-                        <Stat
-                            name="Anthropology"
-                            value={1}
-                            skill
-                        />
+                        {skills.map(([key, skill]) => (
+                            <Stat
+                                key={key}
+                                name={skill.name}
+                                value={skill.current}
+                                used={skill.used}
+                                skill
+                                toggleSkillUsed={() => this.props.dispatch(toggleSkillUsed(key))}
+                            />
+                        ))}
                     </Card>
                 </VBox>
             </HBox>
