@@ -9,17 +9,21 @@ import {
 } from 'react-native-elements';
 
 import { toggleSkillUsed, barChanged } from '../Reducers/character';
+import { barSetOpen } from '../Reducers/character/ui';
+
 import { Stat, Bar } from '../Components/Stat';
 import { HBox, VBox } from '../Components/Box';
 
 
 @connect((state) => ({
     character: state.character.toJS(),
+    ui: state.character_ui.toJS(),
 }))
 export default class CharacterScreen extends React.Component {
     static propTypes = {
         character: PropTypes.object,
         dispatch: PropTypes.func,
+        ui: PropTypes.object,
     }
 
     static navigationOptions = (nav) => ({
@@ -29,6 +33,23 @@ export default class CharacterScreen extends React.Component {
     render() {
         const char = this.props.character;
         const skills = Object.entries(char.skills);
+        const bars = [{
+            key: 'hp',
+            name: 'Hit Points',
+            color: 'darkred',
+        }, {
+            key: 'san',
+            name: 'Sanity',
+            color: 'purple',
+        }, {
+            key: 'luck',
+            name: 'Luck',
+            color: 'blue',
+        }, {
+            key: 'mp',
+            name: 'Magic Points',
+            color: 'green',
+        }];
 
         return (
             <HBox>
@@ -37,34 +58,18 @@ export default class CharacterScreen extends React.Component {
                         <Text h4>{char.name}</Text>
 
                         <List>
-                            <Bar
-                                name="Hit Points"
-                                value={char.hp.current}
-                                max={char.hp.max}
-                                color="darkred"
-                                barChanged={(value) => this.props.dispatch(barChanged('hp', value))}
+                            {bars.map((bar) => (
+                                <Bar
+                                    key={bar.key}
+                                    name={bar.name}
+                                    value={char[bar.key].current}
+                                    max={char[bar.key].max}
+                                    color={bar.color}
+                                    open={this.props.ui.openBar === bar.key}
+                                    setOpen={(value) => this.props.dispatch(barSetOpen(value ? bar.key : null))}
+                                    barChanged={(value) => this.props.dispatch(barChanged(bar.key, value))}
                             />
-                            <Bar
-                                name="Sanity"
-                                value={char.san.current}
-                                max={char.san.max}
-                                color="purple"
-                                barChanged={(value) => this.props.dispatch(barChanged('san', value))}
-                            />
-                            <Bar
-                                name="Luck"
-                                value={char.luck.current}
-                                max={char.luck.max}
-                                color="blue"
-                                barChanged={(value) => this.props.dispatch(barChanged('luck', value))}
-                            />
-                            <Bar
-                                name="Magic Points"
-                                value={char.mp.current}
-                                max={char.mp.max}
-                                color="green"
-                                barChanged={(value) => this.props.dispatch(barChanged('mp', value))}
-                            />
+                            ))}
 
                             <ListItem
                                 rightTitle="Occupation"

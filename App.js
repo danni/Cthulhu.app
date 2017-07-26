@@ -11,6 +11,7 @@ import AppNavigator from './routes';
 const AppReducer = combineReducers({
     nav: require('./Reducers/nav').default,
     character: require('./Reducers/character').default,
+    character_ui: require('./Reducers/character/ui').default,
 });
 const store = createStore(AppReducer);
 

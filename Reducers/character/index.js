@@ -1,3 +1,7 @@
+// Data-reducer
+//
+// For UI-state, see Reducers/character/ui
+
 import { fromJS } from 'immutable';
 
 const initial = fromJS({
@@ -11,11 +15,12 @@ const initial = fromJS({
     hp: {
         current: 9,  // Current hit points
         today: 9,  // Hit points at the start of the day
-        max: 9,
+        // Max is calculated
     },
     san: {
         current: 80,  // Current sanity
         today: 80,  // Sanity at the start of the day
+        // Max is calculated
     },
     luck: {
         current: 65,
@@ -23,6 +28,7 @@ const initial = fromJS({
     },
     mp: {
         current: 16,
+        // Max is calculated
     },
 
     stats: {
@@ -71,7 +77,6 @@ export const barChanged = (bar, value) => ({
     bar,
     value,
 });
-
 
 // Reducer
 export default (state = initial, action) => {

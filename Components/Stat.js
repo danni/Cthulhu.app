@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ProgressViewIOS, Picker } from 'react-native';
+import {
+    ProgressViewIOS,
+    Picker,
+    LayoutAnimation,
+} from 'react-native';
 import {
     Text,
     ListItem,
@@ -75,30 +79,22 @@ export class Bar extends React.Component {
         color: PropTypes.string,
         max: PropTypes.number,
         name: PropTypes.string,
+        open: PropTypes.bool,
+        setOpen: PropTypes.func,
         value: PropTypes.number,
     };
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            open: false,
-        };
-    }
-
     onPress() {
-        if (!this.props.barChanged) {
+        if (!this.props.barChanged || !this.props.setOpen) {
             return;
         }
 
-        this.setState({
-            open: !this.state.open,
-        });
+        this.props.setOpen(!this.props.open);
     }
 
     onBarChanged(value) {
         this.props.barChanged(value);
-
-        this.setState({ open: false })
+        this.props.setOpen(false);
     }
 
     render() {
@@ -124,7 +120,9 @@ export class Bar extends React.Component {
     }
 
     renderPicker() {
-        if (!this.state.open) {
+        LayoutAnimation.easeInEaseOut();
+
+        if (!this.props.open) {
             return;
         }
 
