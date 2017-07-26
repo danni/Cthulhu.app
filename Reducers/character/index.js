@@ -5,6 +5,8 @@
 import { fromJS } from 'immutable';
 
 const initial = fromJS({
+    id: 1,  // Used for storing the character
+
     name: 'Maddy Tillinghast',
     occupation: 'Dilettante',
     age: 32,

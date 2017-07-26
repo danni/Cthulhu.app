@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { combineReducers, createStore } from 'redux';
+import { combineReducers, createStore, applyMiddleware } from 'redux';
+import createSagaMiddleware from 'redux-saga'
 import { Provider, connect } from 'react-redux';
 import { addNavigationHelpers } from 'react-navigation';
 
 import AppNavigator from './routes';
+import sagas from './Sagas';
 
 
 // All reducers in the store
@@ -13,7 +15,10 @@ const AppReducer = combineReducers({
     character: require('./Reducers/character').default,
     character_ui: require('./Reducers/character/ui').default,
 });
-const store = createStore(AppReducer);
+const sagaMiddleware = createSagaMiddleware();
+const store = createStore(AppReducer, applyMiddleware(sagaMiddleware));
+
+sagaMiddleware.run(sagas)
 
 
 // A component containing the navigation stack that will be connected to a
