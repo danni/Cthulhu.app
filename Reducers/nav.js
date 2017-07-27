@@ -1,7 +1,7 @@
 import AppNavigator from '../routes';
 
 const initial = AppNavigator.router.getStateForAction(
-    AppNavigator.router.getActionForPathAndParams('Character')
+    AppNavigator.router.getActionForPathAndParams('Home')
 );
 
 export default (state = initial, action) => {

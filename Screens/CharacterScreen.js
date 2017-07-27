@@ -27,6 +27,7 @@ export default class CharacterScreen extends React.Component {
     static propTypes = {
         character: PropTypes.object,
         dispatch: PropTypes.func,
+        navigation: PropTypes.object,
         ui: PropTypes.object,
     }
 
@@ -35,12 +36,30 @@ export default class CharacterScreen extends React.Component {
     });
 
     componentDidMount() {
-        this.props.dispatch(loadCharacter(1));
+        const id = this.props.navigation.state.params.id;
+        this.props.dispatch(loadCharacter(id));
     }
 
     render() {
         const char = this.props.character;
         const skills = Object.entries(char.skills);
+        const attributes = [{
+            key: 'occupation',
+            name: 'Occupation',
+        }, {
+            key: 'age',
+            name: 'Age',
+        }, {
+            key: 'sex',
+            name: 'Sex',
+        }, {
+            key: 'birthplace',
+            name: 'Birthplace',
+        }, {
+            key: 'residence',
+            name: 'Residence',
+        }];
+
         const bars = [{
             key: 'hp',
             name: 'Hit Points',
@@ -57,6 +76,29 @@ export default class CharacterScreen extends React.Component {
             key: 'mp',
             name: 'Magic Points',
             color: 'green',
+        }];
+
+        const stats = [{
+            key: 'str',
+            name: 'Strength',
+        }, {
+            key: 'con',
+            name: 'Constitution',
+        }, {
+            key: 'siz',
+            name: 'Size',
+        }, {
+            key: 'dex',
+            name: 'Dexterity',
+        }, {
+            key: 'app',
+            name: 'Appearance',
+        }, {
+            key: 'edu',
+            name: 'Education',
+        }, {
+            key: 'pow',
+            name: 'Power',
         }];
 
         return (
@@ -78,70 +120,27 @@ export default class CharacterScreen extends React.Component {
                                     barChanged={(value) => this.props.dispatch(barChanged(bar.key, value))}
                             />
                             ))}
-
-                            <ListItem
-                                rightTitle="Occupation"
-                                title={char.occupation}
-                                hideChevron
-                            />
-                            <ListItem
-                                rightTitle="Age"
-                                title={char.age}
-                                hideChevron
-                            />
-                            <ListItem
-                                rightTitle="Sex"
-                                title={char.sex}
-                                hideChevron
-                            />
-                            <ListItem
-                                rightTitle="Birthplace"
-                                title={char.birthplace}
-                                hideChevron
-                            />
-                            <ListItem
-                                rightTitle="Residence"
-                                title={char.residence}
-                                hideChevron
-                            />
+                            {attributes.map((attr) => (
+                                <ListItem
+                                    key={attr.key}
+                                    rightTitle={attr.name}
+                                    title={char[attr.key]}
+                                    hideChevron
+                                />
+                            ))}
                         </List>
 
                     </Card>
                 </VBox>
                 <VBox flex={2}>
                     <Card title="Characteristics">
-                        <Stat
-                            name="Strength"
-                            value={char.stats.str}
-                        />
-                        <Stat
-                            name="Constitution"
-                            value={char.stats.con}
-                        />
-                        <Stat
-                            name="Size"
-                            value={char.stats.siz}
-                        />
-                        <Stat
-                            name="Dexterity"
-                            value={char.stats.dex}
-                        />
-                        <Stat
-                            name="Appearance"
-                            value={char.stats.app}
-                        />
-                        <Stat
-                            name="Education"
-                            value={char.stats.edu}
-                        />
-                        <Stat
-                            name="Intelligence"
-                            value={char.stats.int}
-                        />
-                        <Stat
-                            name="Power"
-                            value={char.stats.pow}
-                        />
+                        {stats.map((stat) => (
+                            <Stat
+                                key={stat.key}
+                                name={stat.name}
+                                value={char.stats[stat.key]}
+                            />
+                        ))}
                     </Card>
                 </VBox>
                 <VBox flex={2}>
