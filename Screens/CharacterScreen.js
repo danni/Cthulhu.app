@@ -8,7 +8,11 @@ import {
     ListItem,
 } from 'react-native-elements';
 
-import { toggleSkillUsed, barChanged } from '../Reducers/character';
+import {
+    barChanged,
+    loadCharacter,
+    toggleSkillUsed,
+} from '../Reducers/character';
 import { barSetOpen } from '../Reducers/character/ui';
 
 import { Stat, Bar } from '../Components/Stat';
@@ -29,6 +33,10 @@ export default class CharacterScreen extends React.Component {
     static navigationOptions = (nav) => ({
         title: nav.navigation.character.name,
     });
+
+    componentDidMount() {
+        this.props.dispatch(loadCharacter(1));
+    }
 
     render() {
         const char = this.props.character;

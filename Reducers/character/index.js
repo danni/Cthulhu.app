@@ -80,6 +80,19 @@ export const barChanged = (bar, value) => ({
     value,
 });
 
+export const LOAD_CHARACTER = 'character/LOAD_CHARACTER';
+export const loadCharacter = (id) => ({
+    type: LOAD_CHARACTER,
+    id,
+});
+
+export const LOAD_CHARACTER_DONE = 'character/LOAD_CHARACTER_DONE';
+export const loadCharacterDone = (data) => ({
+    type: LOAD_CHARACTER_DONE,
+    data,
+});
+
+
 // Reducer
 export default (state = initial, action) => {
     switch (action.type) {
@@ -92,6 +105,11 @@ export default (state = initial, action) => {
         case BAR_CHANGED:
             state = state
                 .setIn([action.bar, 'current'], action.value);
+            break;
+
+        case LOAD_CHARACTER_DONE:
+            state = state
+                .mergeDeep(action.data);
             break;
 
         default:

@@ -1,16 +1,20 @@
-import {
-    all,
-    call,
-    select,
-    take,
-} from 'redux-saga/effects';
+import { all, call, put, select, take } from 'redux-saga/effects';
 import { AsyncStorage } from 'react-native';
+
+import {
+    BAR_CHANGED,
+    LOAD_CHARACTER,
+    TOGGLE_SKILL_USED,
+    loadCharacterDone,
+} from './Reducers/character';
 
 
 function* watchLoad() {
     while (true) {
-        const action = yield take('*');
-        console.log("LOADING", action);
+        const action = yield take(LOAD_CHARACTER);
+        const data = yield call(AsyncStorage.getItem,
+            `@character:${action.id}`)
+        yield put(loadCharacterDone(JSON.parse(data)));
     }
 }
 
@@ -19,12 +23,10 @@ function* watchCharacterChanges() {
     while (true) {
         // Listen for all character changes, and serialize them back to the
         // AsyncStorage
-        const action = yield take('*');
-
-        if (!action.type.startsWith('character/')) {
-            continue;
-        }
-
+        yield take([
+            BAR_CHANGED,
+            TOGGLE_SKILL_USED,
+        ]);
         const state = yield select();
         const char = state.character.toJS();
 
