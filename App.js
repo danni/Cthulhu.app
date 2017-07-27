@@ -12,6 +12,7 @@ import sagas from './Sagas';
 // All reducers in the store
 const AppReducer = combineReducers({
     nav: require('./Reducers/nav').default,
+    home: require('./Reducers/home').default,
     character: require('./Reducers/character').default,
     character_ui: require('./Reducers/character/ui').default,
 });

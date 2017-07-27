@@ -12,6 +12,9 @@ import {
     barChanged,
     loadCharacter,
     toggleSkillUsed,
+    ATTRIBUTES,
+    BARS,
+    STATS,
 } from '../Reducers/character';
 import { barSetOpen } from '../Reducers/character/ui';
 
@@ -43,63 +46,6 @@ export default class CharacterScreen extends React.Component {
     render() {
         const char = this.props.character;
         const skills = Object.entries(char.skills);
-        const attributes = [{
-            key: 'occupation',
-            name: 'Occupation',
-        }, {
-            key: 'age',
-            name: 'Age',
-        }, {
-            key: 'sex',
-            name: 'Sex',
-        }, {
-            key: 'birthplace',
-            name: 'Birthplace',
-        }, {
-            key: 'residence',
-            name: 'Residence',
-        }];
-
-        const bars = [{
-            key: 'hp',
-            name: 'Hit Points',
-            color: 'darkred',
-        }, {
-            key: 'san',
-            name: 'Sanity',
-            color: 'purple',
-        }, {
-            key: 'luck',
-            name: 'Luck',
-            color: 'blue',
-        }, {
-            key: 'mp',
-            name: 'Magic Points',
-            color: 'green',
-        }];
-
-        const stats = [{
-            key: 'str',
-            name: 'Strength',
-        }, {
-            key: 'con',
-            name: 'Constitution',
-        }, {
-            key: 'siz',
-            name: 'Size',
-        }, {
-            key: 'dex',
-            name: 'Dexterity',
-        }, {
-            key: 'app',
-            name: 'Appearance',
-        }, {
-            key: 'edu',
-            name: 'Education',
-        }, {
-            key: 'pow',
-            name: 'Power',
-        }];
 
         return (
             <HBox>
@@ -108,7 +54,7 @@ export default class CharacterScreen extends React.Component {
                         <Text h4>{char.name}</Text>
 
                         <List>
-                            {bars.map((bar) => (
+                            {BARS.map((bar) => (
                                 <Bar
                                     key={bar.key}
                                     name={bar.name}
@@ -120,7 +66,7 @@ export default class CharacterScreen extends React.Component {
                                     barChanged={(value) => this.props.dispatch(barChanged(bar.key, value))}
                             />
                             ))}
-                            {attributes.map((attr) => (
+                            {ATTRIBUTES.map((attr) => (
                                 <ListItem
                                     key={attr.key}
                                     rightTitle={attr.name}
@@ -134,7 +80,7 @@ export default class CharacterScreen extends React.Component {
                 </VBox>
                 <VBox flex={2}>
                     <Card title="Characteristics">
-                        {stats.map((stat) => (
+                        {STATS.map((stat) => (
                             <Stat
                                 key={stat.key}
                                 name={stat.name}

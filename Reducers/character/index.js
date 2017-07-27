@@ -92,6 +92,65 @@ export const loadCharacterDone = (data) => ({
     data,
 });
 
+ 
+export const ATTRIBUTES = [{
+    key: 'occupation',
+    name: 'Occupation',
+}, {
+    key: 'age',
+    name: 'Age',
+}, {
+    key: 'sex',
+    name: 'Sex',
+}, {
+    key: 'birthplace',
+    name: 'Birthplace',
+}, {
+    key: 'residence',
+    name: 'Residence',
+}];
+
+export const BARS = [{
+    key: 'hp',
+    name: 'Hit Points',
+    color: 'darkred',
+}, {
+    key: 'san',
+    name: 'Sanity',
+    color: 'purple',
+}, {
+    key: 'luck',
+    name: 'Luck',
+    color: 'blue',
+}, {
+    key: 'mp',
+    name: 'Magic Points',
+    color: 'green',
+}];
+
+export const STATS = [{
+    key: 'str',
+    name: 'Strength',
+}, {
+    key: 'con',
+    name: 'Constitution',
+}, {
+    key: 'siz',
+    name: 'Size',
+}, {
+    key: 'dex',
+    name: 'Dexterity',
+}, {
+    key: 'app',
+    name: 'Appearance',
+}, {
+    key: 'edu',
+    name: 'Education',
+}, {
+    key: 'pow',
+    name: 'Power',
+}];
+
 
 // Reducer
 export default (state = initial, action) => {

@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Image, TouchableHighlight } from 'react-native';
+import { Card } from 'react-native-elements';
 
 import { VBox, HBox } from '../Components/Box';
-import {
-    Card,
-} from 'react-native-elements';
+import { load } from '../Reducers/home';
 
 
 @connect((state) => ({
+    store: state.home.toJS(),
 }))
 export default class HomeScreen extends React.Component {
     static navigationOptions = {
@@ -17,22 +17,25 @@ export default class HomeScreen extends React.Component {
     };
 
     static propTypes = {
+        dispatch: PropTypes.func,
         navigation: PropTypes.object,
+        store: PropTypes.object,
     };
+
+    componentDidMount() {
+        this.props.dispatch(load());
+    }
 
     onCharacterPress(id) {
         const { navigate } = this.props.navigation;
 
-        navigate('Character',{
+        navigate('Character', {
             id,
         });
     }
 
     render() {
-        const characters = [{
-            name: 'Maddy Tillinghast',
-            id: 1,
-        }];
+        const characters = this.props.store.characters;
 
         return (
             <VBox>
