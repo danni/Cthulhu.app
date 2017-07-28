@@ -8,7 +8,12 @@ export class Box extends React.Component {
         children: PropTypes.node,
         direction: PropTypes.string,
         expand: PropTypes.bool,
+        style: View.propTypes.style,
     };
+
+    setNativeProps(props) {
+        this._view.setNativeProps(props);
+    }
 
     render() {
         const {
@@ -16,12 +21,12 @@ export class Box extends React.Component {
             direction,
             expand,
             children,
+            style: styleProp,
             ...rest
         } = this.props;
 
         const style = {
             flexDirection: direction,
-            ...rest
         };
 
         if (center) {
@@ -33,7 +38,7 @@ export class Box extends React.Component {
         }
 
         return (
-            <View style={style}>
+            <View ref={(ref) => {this._view = ref}} style={[style, styleProp, rest]}>
                 {children}
             </View>
         );

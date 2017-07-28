@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { orderBy } from 'lodash';
-import { FlatList } from 'react-native';
+import {
+    FlatList,
+    Text,
+    StyleSheet,
+} from 'react-native';
 import {
     Button,
-    Card,
-    Text,
-    List,
-    ListItem,
 } from 'react-native-elements';
 
 import {
@@ -21,8 +21,29 @@ import {
 } from '../Reducers/character';
 import { barSetOpen } from '../Reducers/character/ui';
 
-import { Stat, Bar } from '../Components/Stat';
 import { HBox, VBox } from '../Components/Box';
+import { Stat, Bar } from '../Components/Stat';
+import { ListItem } from '../Components/ListItem';
+
+
+const styles = StyleSheet.create({
+    column: {
+        flex: 2,
+        backgroundColor: 'white',
+        margin: 8,
+        padding: 8,
+    },
+
+    characterName: {
+        fontSize: 28,
+        fontWeight: '300',
+    },
+
+    sectionHeading: {
+        fontSize: 22,
+        fontWeight: '300',
+    }
+})
 
 
 @connect((state) => ({
@@ -71,66 +92,57 @@ export default class CharacterScreen extends React.Component {
         const char = this.props.character;
         const skills = orderBy(Object.entries(char.skills)
             .map(([key, skill]) => ({ key, ...skill })), 'name');
-        console.log(skills);
 
         return (
             <HBox>
-                <VBox flex={2}>
-                    <Card>
-                        <Text h4>{char.name}</Text>
+                <VBox style={styles.column}>
+                    <Text style={styles.characterName}>{char.name}</Text>
 
-                        <List>
-                            {BARS.map((bar) => (
-                                <Bar
-                                    key={bar.key}
-                                    name={bar.name}
-                                    value={char[bar.key].current}
-                                    max={char[bar.key].max}
-                                    color={bar.color}
-                                    open={this.props.ui.openBar === bar.key}
-                                    setOpen={(value) => this.onBarOpened(value ? bar.key : null)}
-                                    onChange={(value) => this.onBarChanged(bar.key, value)}
-                            />
-                            ))}
-                            {ATTRIBUTES.map((attr) => (
-                                <ListItem
-                                    key={attr.key}
-                                    rightTitle={attr.name}
-                                    title={char[attr.key]}
-                                    hideChevron
-                                />
-                            ))}
-                        </List>
-
-                    </Card>
-                </VBox>
-                <VBox flex={2}>
-                    <Card title="Characteristics">
-                        {STATS.map((stat) => (
-                            <Stat
-                                key={stat.key}
-                                name={stat.name}
-                                value={char.stats[stat.key]}
-                            />
-                        ))}
-                    </Card>
-                </VBox>
-                <VBox flex={2}>
-                    <Card title="Skills">
-                        <FlatList
-                            data={skills}
-                            renderItem={({item}) => (
-                                <Stat
-                                    name={item.name}
-                                    specialization={item.specialization}
-                                    value={item.current}
-                                    used={item.used}
-                                    skill
-                                    toggleSkillUsed={() => this.toggleSkillUsed(item.key)}
-                                />
-                            )}
+                    {BARS.map((bar) => (
+                        <Bar
+                            key={bar.key}
+                            name={bar.name}
+                            value={char[bar.key].current}
+                            max={char[bar.key].max}
+                            color={bar.color}
+                            open={this.props.ui.openBar === bar.key}
+                            setOpen={(value) => this.onBarOpened(value ? bar.key : null)}
+                            onChange={(value) => this.onBarChanged(bar.key, value)}
+                    />
+                    ))}
+                    {ATTRIBUTES.map((attr) => (
+                        <ListItem
+                            key={attr.key}
+                            label={attr.name}
+                            value={char[attr.key].toString()}
                         />
-                    </Card>
+                    ))}
+                </VBox>
+                <VBox style={styles.column}>
+                    <Text style={styles.sectionHeading}>Characteristics</Text>
+                    {STATS.map((stat) => (
+                        <Stat
+                            key={stat.key}
+                            name={stat.name}
+                            value={char.stats[stat.key]}
+                        />
+                    ))}
+                </VBox>
+                <VBox style={styles.column}>
+                    <Text style={styles.sectionHeading}>Skills</Text>
+                    <FlatList
+                        data={skills}
+                        renderItem={({item}) => (
+                            <Stat
+                                name={item.name}
+                                specialization={item.specialization}
+                                value={item.current}
+                                used={item.used}
+                                skill
+                                toggleSkillUsed={() => this.toggleSkillUsed(item.key)}
+                            />
+                        )}
+                    />
                 </VBox>
             </HBox>
         );

@@ -6,6 +6,7 @@ import {
     ProgressViewIOS,
     StyleSheet,
     Text,
+    TouchableHighlight,
 } from 'react-native';
 import {
     ListItem,
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
         fontWeight: '300',
     },
     statLabelSpecialization: {
-        fontWeight: 14,
+        fontSize: 12,
         fontWeight: '300',
         color: '#555',
     },
@@ -175,23 +176,21 @@ export class Bar extends React.Component {
 
     render() {
         return (
-            <ListItem
-                title={(
-                    <VBox>
-                        <HBox expand marginBottom={8}>
-                            <Text>{this.props.name}</Text>
-                            <Text>{this.props.value}/{this.props.max}</Text>
-                        </HBox>
-                        <ProgressViewIOS
-                            progress={this.props.value / this.props.max}
-                            progressTintColor={this.props.color}
-                        />
-                        {this.renderPicker()}
-                    </VBox>
-                )}
+            <TouchableHighlight
                 onPress={() => this.onPress()}
-                hideChevron
-            />
+            >
+                <VBox marginTop={4} marginBottom={4}>
+                    <HBox expand marginBottom={8}>
+                        <Text>{this.props.name}</Text>
+                        <Text>{this.props.value}/{this.props.max}</Text>
+                    </HBox>
+                    <ProgressViewIOS
+                        progress={this.props.value / this.props.max}
+                        progressTintColor={this.props.color}
+                    />
+                    {this.renderPicker()}
+                </VBox>
+            </TouchableHighlight>
         );
     }
 
