@@ -30,7 +30,6 @@ sagaMiddleware.run(sagas)
 }))
 class App extends React.Component {
     static propTypes = {
-        character: PropTypes.object,
         dispatch: PropTypes.func,
         nav: PropTypes.object,
     };

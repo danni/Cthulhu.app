@@ -6,8 +6,8 @@ import {
     loadDone,
 } from './Reducers/home';
 import {
-    BAR_CHANGED,
     LOAD_CHARACTER,
+    SET_VALUE,
     TOGGLE_SKILL_USED,
     loadCharacterDone,
 } from './Reducers/character';
@@ -51,7 +51,7 @@ function* watchCharacterChanges() {
         // Listen for all character changes, and serialize them back to the
         // AsyncStorage
         yield take([
-            BAR_CHANGED,
+            SET_VALUE,
             TOGGLE_SKILL_USED,
         ]);
         const state = yield select();

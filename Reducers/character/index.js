@@ -5,14 +5,14 @@
 import { fromJS } from 'immutable';
 
 const initial = fromJS({
-    id: 1,  // Used for storing the character
+    id: null,  // Used for storing the character
 
-    name: 'Maddy Tillinghast',
-    occupation: 'Dilettante',
-    age: 32,
-    sex: 'Female',
-    birthplace: 'Salem, MA',
-    residence: 'Arkham, MA',
+    name: '-',
+    occupation: '-',
+    age: '-',
+    sex: '-',
+    birthplace: '-',
+    residence: '-',
 
     hp: {
         current: 9,  // Current hit points
@@ -44,6 +44,7 @@ const initial = fromJS({
         pow: 80,
     },
 
+    // Skills start with a current value equivalent to the default
     skills: {
         accounting: {
             name: 'Accounting',
@@ -57,9 +58,75 @@ const initial = fromJS({
             used: false,
         },
 
+        appraise: {
+            name: 'Appraise',
+            current: 5,
+            used: false,
+        },
+
+        archaeology: {
+            name: 'Archaeology',
+            current: 1,
+            used: false,
+        },
+
+        acting: {
+            name: 'Art & Craft',
+            specialization: 'Acting',
+            current: 5,
+            used: false,
+        },
+
+        charm: {
+            name: 'Charm',
+            current: 15,
+            used: false,
+        },
+
+        climb: {
+            name: 'Climb',
+            current: 20,
+            used: false,
+        },
+
+        credit_rating: {
+            name: 'Credit Rating',
+            current: 0,
+        },
+        
         mythos: {
             name: 'Cthulhu Mythos',
-            current: 2,
+            current: 0,
+            used: false,
+        },
+
+        disguise: {
+            name: 'Disguise',
+            current: 5,
+            used: false,
+        },
+
+        dodge: {
+            name: 'Dodge',
+            current: null,  // half dex
+            used: false,
+        },
+
+        drive_auto: {
+            name: 'Drive Auto',
+            current: 20,
+            used: false,
+        },
+
+        electrical_repair: {
+            name: 'Electrical Repair',
+            current: 10,
+            used: false,
+        },
+
+        fast_talk: {
+            name: 'Fast Talk',
+            current: 5,
             used: false,
         },
     }
@@ -73,10 +140,10 @@ export const toggleSkillUsed = (skill) => ({
     skill,
 });
 
-export const BAR_CHANGED = 'character/BAR_CHANGED';
-export const barChanged = (bar, value) => ({
-    type: BAR_CHANGED,
-    bar,
+export const SET_VALUE = 'character/SET_VALUE';
+export const setValue = (key, value) => ({
+    type: SET_VALUE,
+    key,
     value,
 });
 
@@ -92,7 +159,7 @@ export const loadCharacterDone = (data) => ({
     data,
 });
 
- 
+
 export const ATTRIBUTES = [{
     key: 'occupation',
     name: 'Occupation',
@@ -161,9 +228,9 @@ export default (state = initial, action) => {
                     !state.getIn(['skills', action.skill, 'used']))
             break;
 
-        case BAR_CHANGED:
+        case SET_VALUE:
             state = state
-                .setIn([action.bar, 'current'], action.value);
+                .setIn(action.key, action.value);
             break;
 
         case LOAD_CHARACTER_DONE:

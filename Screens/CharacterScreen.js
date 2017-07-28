@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { orderBy } from 'lodash';
+import { FlatList } from 'react-native';
 import {
+    Button,
     Card,
     Text,
     List,
@@ -9,7 +12,7 @@ import {
 } from 'react-native-elements';
 
 import {
-    barChanged,
+    setValue,
     loadCharacter,
     toggleSkillUsed,
     ATTRIBUTES,
@@ -34,8 +37,17 @@ export default class CharacterScreen extends React.Component {
         ui: PropTypes.object,
     }
 
-    static navigationOptions = (nav) => ({
-        title: nav.navigation.character.name,
+    static navigationOptions = ({ navigation }) => ({
+        title: 'Character',  // FIXME
+        headerRight: (
+            <Button
+                icon={{ name: 'mode-edit', color: '#037aff' }}
+                backgroundColor="transparent"
+                onPress={() => navigation.navigate('EditCharacter', {
+                    id: navigation.state.id,
+                })}
+            />
+        ),
     });
 
     componentDidMount() {
@@ -43,9 +55,23 @@ export default class CharacterScreen extends React.Component {
         this.props.dispatch(loadCharacter(id));
     }
 
+    onBarOpened(key) {
+        this.props.dispatch(barSetOpen(key));
+    }
+
+    onBarChanged(key, value) {
+        this.props.dispatch(setValue([key, 'current'], value))
+    }
+
+    toggleSkillUsed(key) {
+        this.props.dispatch(toggleSkillUsed(key));
+    }
+
     render() {
         const char = this.props.character;
-        const skills = Object.entries(char.skills);
+        const skills = orderBy(Object.entries(char.skills)
+            .map(([key, skill]) => ({ key, ...skill })), 'name');
+        console.log(skills);
 
         return (
             <HBox>
@@ -62,8 +88,8 @@ export default class CharacterScreen extends React.Component {
                                     max={char[bar.key].max}
                                     color={bar.color}
                                     open={this.props.ui.openBar === bar.key}
-                                    setOpen={(value) => this.props.dispatch(barSetOpen(value ? bar.key : null))}
-                                    barChanged={(value) => this.props.dispatch(barChanged(bar.key, value))}
+                                    setOpen={(value) => this.onBarOpened(value ? bar.key : null)}
+                                    onChange={(value) => this.onBarChanged(bar.key, value)}
                             />
                             ))}
                             {ATTRIBUTES.map((attr) => (
@@ -91,16 +117,19 @@ export default class CharacterScreen extends React.Component {
                 </VBox>
                 <VBox flex={2}>
                     <Card title="Skills">
-                        {skills.map(([key, skill]) => (
-                            <Stat
-                                key={key}
-                                name={skill.name}
-                                value={skill.current}
-                                used={skill.used}
-                                skill
-                                toggleSkillUsed={() => this.props.dispatch(toggleSkillUsed(key))}
-                            />
-                        ))}
+                        <FlatList
+                            data={skills}
+                            renderItem={({item}) => (
+                                <Stat
+                                    name={item.name}
+                                    specialization={item.specialization}
+                                    value={item.current}
+                                    used={item.used}
+                                    skill
+                                    toggleSkillUsed={() => this.toggleSkillUsed(item.key)}
+                                />
+                            )}
+                        />
                     </Card>
                 </VBox>
             </HBox>

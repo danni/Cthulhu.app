@@ -36,6 +36,7 @@ export class StatBlock extends React.Component {
 export class Stat extends React.Component {
     static propTypes = {
         name: PropTypes.string,
+        specialization: PropTypes.string,
         skill: PropTypes.bool,
         toggleSkillUsed: PropTypes.func,
         used: PropTypes.bool,
@@ -64,6 +65,7 @@ export class Stat extends React.Component {
         return (
             <ListItem
                 title={this.props.name}
+                subtitle={this.props.specialization}
                 leftIcon={left}
                 rightIcon={right}
                 leftIconOnPress={() => this.onLeftPress()}
@@ -73,9 +75,61 @@ export class Stat extends React.Component {
 }
 
 
+export class EditableStat extends React.Component {
+    static propTypes = {
+        initialValue: PropTypes.number,
+        onChange: PropTypes.func,
+    };
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            value: props.initialValue || 0,
+        }
+    }
+
+    onChange(value) {
+        this.setState({ value })
+    }
+
+    onBlur() {
+        let value = this.state.value;
+        value = parseInt(value, 10);
+        value = Math.min(value, 99);
+        value = Math.max(value, 0);
+
+        if (this.props.onChange) {
+            this.props.onChange(value);
+        }
+
+        this.setState({ value });
+    }
+
+    render() {
+        const {
+            initialValue,
+            onChange,
+            ...rest
+        } = this.props;
+        return (
+            <ListItem
+                textInputValue={this.state.value.toString()}
+                textInputOnChangeText={(value) => this.onChange(value)}
+                textInputOnBlur={() => this.onBlur()}
+                textInputKeyboardType="numeric"
+                textInput
+                hideChevron
+                {...rest}
+            />
+        );
+    }
+}
+
+
 export class Bar extends React.Component {
     static propTypes = {
-        barChanged: PropTypes.func,
+        onChange: PropTypes.func,
         color: PropTypes.string,
         max: PropTypes.number,
         name: PropTypes.string,
@@ -85,7 +139,7 @@ export class Bar extends React.Component {
     };
 
     onPress() {
-        if (!this.props.barChanged || !this.props.setOpen) {
+        if (!this.props.onChange || !this.props.setOpen) {
             return;
         }
 
@@ -93,7 +147,7 @@ export class Bar extends React.Component {
     }
 
     onBarChanged(value) {
-        this.props.barChanged(value);
+        this.props.onChange(value);
         this.props.setOpen(false);
     }
 
