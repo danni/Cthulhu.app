@@ -1,17 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-    ProgressViewIOS,
-    Picker,
     LayoutAnimation,
+    Picker,
+    ProgressViewIOS,
+    StyleSheet,
+    Text,
 } from 'react-native';
 import {
-    Text,
     ListItem,
 } from 'react-native-elements';
 import { range } from 'lodash';
 
 import { HBox, VBox } from './Box';
+
+
+const styles = StyleSheet.create({
+    statLabel: {
+        fontSize: 17,
+        fontWeight: '300',
+    },
+    statLabelSpecialization: {
+        fontWeight: 14,
+        fontWeight: '300',
+        color: '#555',
+    },
+
+    statBlock: {
+        fontSize: 28,
+        fontWeight: '300',
+    }
+});
 
 
 export class StatBlock extends React.Component {
@@ -21,9 +40,9 @@ export class StatBlock extends React.Component {
 
     render() {
         return (
-            <HBox>
-                <Text h4>{this.props.value}</Text>
-                <VBox marginLeft={8}>
+            <HBox margin={4}>
+                <Text style={styles.statBlock}>{this.props.value}</Text>
+                <VBox marginLeft={8} width={20} center>
                     <Text>{Math.floor(this.props.value / 2)}</Text>
                     <Text>{Math.floor(this.props.value / 5)}</Text>
                 </VBox>
@@ -51,6 +70,7 @@ export class Stat extends React.Component {
 
     render() {
         let left = null;
+        let style = styles.statLabel;
 
         if (this.props.skill) {
             left = {
@@ -58,18 +78,20 @@ export class Stat extends React.Component {
             };
         }
 
-        const right = (
-            <StatBlock value={this.props.value} />
-        );
+        if (this.props.specialization) {
+            style = styles.statLabelSpecialization;
+        }
 
         return (
-            <ListItem
-                title={this.props.name}
-                subtitle={this.props.specialization}
-                leftIcon={left}
-                rightIcon={right}
-                leftIconOnPress={() => this.onLeftPress()}
-            />
+            <HBox expand center>
+                <VBox>
+                    <Text style={style}>{this.props.name}</Text>
+                    {this.props.specialization
+                            ? <Text style={styles.statLabel}>{this.props.specialization}</Text>
+                            : null}
+                </VBox>
+                <StatBlock value={this.props.value} />
+            </HBox>
         );
     }
 }

@@ -4,6 +4,7 @@ import { View } from 'react-native';
 
 export class Box extends React.Component {
     static propTypes = {
+        center: PropTypes.bool,
         children: PropTypes.node,
         direction: PropTypes.string,
         expand: PropTypes.bool,
@@ -11,6 +12,7 @@ export class Box extends React.Component {
 
     render() {
         const {
+            center,
             direction,
             expand,
             children,
@@ -21,6 +23,10 @@ export class Box extends React.Component {
             flexDirection: direction,
             ...rest
         };
+
+        if (center) {
+            style.alignItems = 'center';
+        }
 
         if (expand) {
             style.justifyContent = 'space-between';
