@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { orderBy } from 'lodash';
 import {
-    Button,
     FlatList,
     Image,
     ScrollView,
     StyleSheet,
+    TouchableOpacity,
     Text,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Octicons';
 
 import styles from '../styles';
 
@@ -29,6 +30,10 @@ import { ListItem } from '../Components/ListItem';
 
 
 const charStyles = StyleSheet.create({
+    editButton: {
+        padding: 10,
+    },
+
     image: {
         width: '100%',
         height: 'auto',
@@ -63,13 +68,18 @@ export default class CharacterScreen extends React.Component {
     static navigationOptions = ({ navigation }) => ({
         title: 'Character',  // FIXME
         headerRight: (
-            <Button
-                title="Edit"
-                color="#037aff"
+            <TouchableOpacity
+                style={charStyles.editButton}
                 onPress={() => navigation.navigate('EditCharacter', {
                     id: navigation.state.id,
                 })}
-            />
+            >
+                <Icon
+                    name="pencil"
+                    color="#037aff"
+                    size={30}
+                />
+            </TouchableOpacity>
         ),
     });
 
