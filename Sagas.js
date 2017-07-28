@@ -6,6 +6,7 @@ import {
     loadDone,
 } from './Reducers/home';
 import {
+    DELETE_SKILL,
     LOAD_CHARACTER,
     SET_VALUE,
     TOGGLE_SKILL_USED,
@@ -51,6 +52,7 @@ function* watchCharacterChanges() {
         // Listen for all character changes, and serialize them back to the
         // AsyncStorage
         yield take([
+            DELETE_SKILL,
             SET_VALUE,
             TOGGLE_SKILL_USED,
         ]);

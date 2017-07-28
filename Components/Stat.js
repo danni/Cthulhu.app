@@ -11,11 +11,16 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Swipeable from 'react-native-swipeable';
 
 import { HBox, VBox } from './Box';
 
 
 const styles = StyleSheet.create({
+    row: {
+        padding: 5,
+    },
+
     statLabel: {
         fontSize: 17,
         fontWeight: 'normal',
@@ -41,6 +46,12 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 10,
     },
+
+    deleteSwipe: {
+        backgroundColor: 'rgb(255, 59, 48)',
+        padding: 10,
+        paddingLeft: 20,
+    },
 });
 
 
@@ -51,7 +62,7 @@ export class StatBlock extends React.Component {
 
     render() {
         return (
-            <HBox margin={4}>
+            <HBox margin={5}>
                 <Text style={styles.statBlock}>{this.props.value}</Text>
                 <VBox marginLeft={8} width={20} center>
                     <Text>{Math.floor(this.props.value / 2)}</Text>
@@ -124,6 +135,7 @@ export class EditableStat extends React.Component {
         initial: PropTypes.number,
         label: PropTypes.string,
         onChange: PropTypes.func,
+        onDelete: PropTypes.func,
         specialization: PropTypes.string,
     };
 
@@ -153,6 +165,7 @@ export class EditableStat extends React.Component {
         const {
             initial,
             onChange,
+            onDelete,
             label,
             specialization,
             ...rest
@@ -170,8 +183,8 @@ export class EditableStat extends React.Component {
             ? styles.statLabelSpecialization
             : styles.statLabel;
 
-        return (
-            <HBox expand center>
+        const row = (
+            <HBox style={styles.row} expand center>
                 <VBox>
                     {label
                         ? <Text style={style}>{label}</Text>
@@ -191,6 +204,31 @@ export class EditableStat extends React.Component {
                 />
             </HBox>
         );
+
+        if (onDelete) {
+            const button = (
+                <TouchableOpacity
+                    onPress={() => onDelete()}
+                    style={styles.deleteSwipe}
+                >
+                    <Icon
+                        name="ios-trash-outline"
+                        size={30}
+                        color="white"
+                    />
+                </TouchableOpacity>
+            );
+
+            return (
+                <Swipeable
+                    rightButtons={[button]}
+                >
+                    {row}
+                </Swipeable>
+            );
+        } else {
+            return row;
+        }
     }
 }
 

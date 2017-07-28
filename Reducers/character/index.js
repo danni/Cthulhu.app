@@ -129,6 +129,43 @@ const initial = fromJS({
             current: 5,
             used: false,
         },
+
+        first_aid: {
+            name: 'First Aid',
+            current: 30,
+            used: false,
+        },
+
+        history: {
+            name: 'History',
+            current: 5,
+            used: false,
+        },
+
+        intimidate: {
+            name: 'Intimidate',
+            current: 15,
+            used: false,
+        },
+
+        jump: {
+            name: 'Jump',
+            current: 20,
+            used: false,
+        },
+
+        language_own: {
+            name: 'Language',
+            specialization: '(Own)',
+            current: null,  // EDU
+            used: false,
+        },
+
+        law: {
+            name: 'Law',
+            current: 5,
+            used: false,
+        },
     }
 });
 
@@ -137,6 +174,12 @@ const initial = fromJS({
 export const TOGGLE_SKILL_USED = 'character/TOGGLE_SKILL_USED';
 export const toggleSkillUsed = (skill) => ({
     type: TOGGLE_SKILL_USED,
+    skill,
+});
+
+export const DELETE_SKILL = 'character/DELETE_SKILL';
+export const deleteSkill = (skill) => ({
+    type: DELETE_SKILL,
     skill,
 });
 
@@ -225,7 +268,12 @@ export default (state = initial, action) => {
         case TOGGLE_SKILL_USED:
             state = state
                 .setIn(['skills', action.skill, 'used'],
-                    !state.getIn(['skills', action.skill, 'used']))
+                    !state.getIn(['skills', action.skill, 'used']));
+            break;
+
+        case DELETE_SKILL:
+            state = state
+                .deleteIn(['skills', action.skill]);
             break;
 
         case SET_VALUE:

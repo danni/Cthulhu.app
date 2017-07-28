@@ -10,6 +10,7 @@ import {
 import styles from '../styles';
 
 import {
+    deleteSkill,
     loadCharacter,
     setValue,
     ATTRIBUTES,
@@ -42,6 +43,10 @@ export default class EditCharacterScreen extends React.Component {
 
     onValueChanged(key, value) {
         this.props.dispatch(setValue(key, value));
+    }
+
+    onSkillDeleted(key) {
+        this.props.dispatch(deleteSkill(key));
     }
 
     render() {
@@ -89,6 +94,7 @@ export default class EditCharacterScreen extends React.Component {
                                 specialization={item.specialization}
                                 initial={item.current}
                                 onChange={(value) => this.onValueChanged(['skills', item.key, 'current'], value)}
+                                onDelete={() => this.onSkillDeleted(item.key)}
                             />
                         )}
                     />
