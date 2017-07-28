@@ -6,7 +6,7 @@ import {
     TextInput,
 } from 'react-native';
 
-import { HBox, VBox } from './Box';
+import { VBox } from './Box';
 
 
 const styles = StyleSheet.create({

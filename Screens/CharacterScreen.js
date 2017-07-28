@@ -5,6 +5,9 @@ import { orderBy } from 'lodash';
 import {
     Button,
     FlatList,
+    Image,
+    ScrollView,
+    StyleSheet,
     Text,
 } from 'react-native';
 
@@ -23,6 +26,26 @@ import { barSetOpen } from '../Reducers/character/ui';
 import { HBox, VBox } from '../Components/Box';
 import { Stat, Bar } from '../Components/Stat';
 import { ListItem } from '../Components/ListItem';
+
+
+const charStyles = StyleSheet.create({
+    image: {
+        width: '100%',
+        height: 'auto',
+        minHeight: 300,
+        backgroundColor: 'gray',
+    },
+
+    characterName: {
+        backgroundColor: '#000000aa',
+        bottom: 0,
+        color: 'white',
+        padding: 2,
+        position: 'absolute',
+        textAlign: 'center',
+        width: '100%',
+    }
+});
 
 
 @connect((state) => ({
@@ -74,29 +97,41 @@ export default class CharacterScreen extends React.Component {
 
         return (
             <HBox style={styles.container}>
-                <VBox style={styles.column}>
-                    <Text style={styles.characterName}>{char.name}</Text>
+                <ScrollView style={styles.column}>
+                    <VBox>
+                        <VBox center marginBottom={10}>
+                            <Image
+                                style={charStyles.image}
+                                resizeMode="contain"
+                            />
+                            <Text
+                                style={[ styles.characterName, charStyles.characterName]}
+                            >
+                                {char.name}
+                            </Text>
+                        </VBox>
 
-                    {BARS.map((bar) => (
-                        <Bar
-                            key={bar.key}
-                            name={bar.name}
-                            value={char[bar.key].current}
-                            max={char[bar.key].max}
-                            color={bar.color}
-                            open={this.props.ui.openBar === bar.key}
-                            setOpen={(value) => this.onBarOpened(value ? bar.key : null)}
-                            onChange={(value) => this.onBarChanged(bar.key, value)}
-                    />
-                    ))}
-                    {ATTRIBUTES.map((attr) => (
-                        <ListItem
-                            key={attr.key}
-                            label={attr.name}
-                            value={char[attr.key].toString()}
+                        {BARS.map((bar) => (
+                            <Bar
+                                key={bar.key}
+                                name={bar.name}
+                                value={char[bar.key].current}
+                                max={char[bar.key].max}
+                                color={bar.color}
+                                open={this.props.ui.openBar === bar.key}
+                                setOpen={(value) => this.onBarOpened(value ? bar.key : null)}
+                                onChange={(value) => this.onBarChanged(bar.key, value)}
                         />
-                    ))}
-                </VBox>
+                        ))}
+                        {ATTRIBUTES.map((attr) => (
+                            <ListItem
+                                key={attr.key}
+                                label={attr.name}
+                                value={char[attr.key].toString()}
+                            />
+                        ))}
+                    </VBox>
+                </ScrollView>
                 <VBox style={styles.column}>
                     <Text style={styles.sectionHeading}>Characteristics</Text>
                     {STATS.map((stat) => (

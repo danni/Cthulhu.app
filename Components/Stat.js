@@ -8,8 +8,9 @@ import {
     StyleSheet,
     Text,
     TextInput,
-    TouchableHighlight,
+    TouchableOpacity,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import { HBox, VBox } from './Box';
 
@@ -34,6 +35,11 @@ const styles = StyleSheet.create({
     input: {
         height: 40,
         width: 40,
+    },
+
+    bar: {
+        paddingTop: 10,
+        paddingBottom: 10,
     },
 });
 
@@ -78,9 +84,17 @@ export class Stat extends React.Component {
         let style = styles.statLabel;
 
         if (this.props.skill) {
-            left = {
-                name: this.props.used ? 'check-box' : 'check-box-outline-blank',
-            };
+            left = (
+                <TouchableOpacity
+                    onPress={() => this.onLeftPress()}
+                >
+                    <Icon
+                        name={this.props.used ? 'ios-checkmark-circle' : 'ios-radio-button-off'}
+                        size={30}
+                        color={'#212141'}
+                    />
+                </TouchableOpacity>
+            );
         }
 
         if (this.props.specialization) {
@@ -89,12 +103,15 @@ export class Stat extends React.Component {
 
         return (
             <HBox expand center>
-                <VBox>
-                    <Text style={style}>{this.props.name}</Text>
-                    {this.props.specialization
+                <HBox>
+                    {left}
+                    <VBox expand marginLeft={10}>
+                        <Text style={style}>{this.props.name}</Text>
+                        {this.props.specialization
                             ? <Text style={styles.statLabel}>{this.props.specialization}</Text>
                             : null}
-                </VBox>
+                        </VBox>
+                </HBox>
                 <StatBlock value={this.props.value} />
             </HBox>
         );
@@ -107,6 +124,7 @@ export class EditableStat extends React.Component {
         initial: PropTypes.number,
         label: PropTypes.string,
         onChange: PropTypes.func,
+        specialization: PropTypes.string,
     };
 
     constructor(props) {
@@ -132,31 +150,34 @@ export class EditableStat extends React.Component {
     }
 
     render() {
-        const { 
+        const {
             initial,
             onChange,
+            label,
+            specialization,
             ...rest
         } = this.props;
 
         let value = this.state.value;
+
         if (Number.isInteger(value)) {
             value = value.toString();
         } else {
             value = '';
         }
 
-        const style = this.props.specialization
+        const style = specialization
             ? styles.statLabelSpecialization
             : styles.statLabel;
 
         return (
             <HBox expand center>
                 <VBox>
-                    {this.props.label
-                        ? <Text style={style}>{this.props.label}</Text>
+                    {label
+                        ? <Text style={style}>{label}</Text>
                         : null}
-                    {this.props.specialization
-                        ? <Text style={styles.statLabel}>{this.props.specialization}</Text>
+                    {specialization
+                        ? <Text style={styles.statLabel}>{specialization}</Text>
                         : null}
                 </VBox>
                 <TextInput
@@ -200,10 +221,11 @@ export class Bar extends React.Component {
 
     render() {
         return (
-            <TouchableHighlight
+            <TouchableOpacity
                 onPress={() => this.onPress()}
+                style={styles.bar}
             >
-                <VBox marginTop={4} marginBottom={4}>
+                <VBox>
                     <HBox expand marginBottom={8}>
                         <Text>{this.props.name}</Text>
                         <Text>{this.props.value}/{this.props.max}</Text>
@@ -214,7 +236,7 @@ export class Bar extends React.Component {
                     />
                     {this.renderPicker()}
                 </VBox>
-            </TouchableHighlight>
+            </TouchableOpacity>
         );
     }
 

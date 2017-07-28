@@ -8,12 +8,13 @@ export default StyleSheet.create({
     },
 
     column: {
-        flex: 2,
+        flex: 1,
         backgroundColor: 'white',
         margin: 20,
         marginLeft: 4,
         marginRight: 4,
         padding: 10,
+        maxWidth: 400,
     },
 
     characterName: {

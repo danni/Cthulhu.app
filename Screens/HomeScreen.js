@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import {
     Image,
     StyleSheet,
-    TouchableHighlight,
+    TouchableOpacity,
     Text,
 } from 'react-native';
 
@@ -62,7 +62,7 @@ export default class HomeScreen extends React.Component {
             <VBox style={styles.container}>
                 <HBox>
                     {characters.map((char) => (
-                        <TouchableHighlight
+                        <TouchableOpacity
                             key={char.id}
                             onPress={() => this.onCharacterPress(char.id)}
                         >
@@ -70,7 +70,7 @@ export default class HomeScreen extends React.Component {
                                 <Text style={styles.sectionHeading}>{char.name}</Text>
                                 <Image style={homeStyles.image}/>
                             </VBox>
-                        </TouchableHighlight>
+                        </TouchableOpacity>
                     ))}
                 </HBox>
             </VBox>
