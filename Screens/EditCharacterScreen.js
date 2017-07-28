@@ -2,14 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { orderBy } from 'lodash';
-import { FlatList } from 'react-native';
-import { Card } from 'react-native-elements';
+import {
+    FlatList,
+    Text,
+} from 'react-native';
+
+import styles from '../styles';
 
 import {
     loadCharacter,
     setValue,
     ATTRIBUTES,
-    BARS,
     STATS,
 } from '../Reducers/character';
 
@@ -43,7 +46,8 @@ export default class EditCharacterScreen extends React.Component {
 
     render() {
         const char = this.props.character;
-        const skills = orderBy(Object.entries(char.skills), '1.name');
+        const skills = orderBy(Object.entries(char.skills)
+            .map(([key, skill]) => ({ key, ...skill })), 'name');
         // Include character name in the list of editable attributes
         const attributes = [{
             key: 'name',
@@ -51,46 +55,43 @@ export default class EditCharacterScreen extends React.Component {
         }].concat(ATTRIBUTES);
 
         return (
-            <HBox>
-                <VBox flex={2}>
-                    <Card title="Attributes">
-                        {attributes.map((attr) => (
-                            <EditableListItem
-                                key={attr.key}
-                                title={attr.name}
-                                initialValue={char[attr.key].toString()}
-                                onChange={(value) => this.onValueChanged([attr.key], value)}
-                            />
-                        ))}
-                    </Card>
-                </VBox>
-                <VBox flex={2}>
-                    <Card title="Characteristics">
-                        {STATS.map((stat) => (
-                            <EditableStat
-                                key={stat.key}
-                                title={stat.name}
-                                initialValue={char.stats[stat.key]}
-                                onChange={(value) => this.onValueChanged(['stats', stat.key], value)}
-                            />
-                        ))}
-                    </Card>
-                </VBox>
-                <VBox flex={2}>
-                    <Card title="Skills">
-                        <FlatList
-                            data={skills}
-                            renderItem={({item}) => (
-                                <EditableStat
-                                    key={item[0]}
-                                    title={item[1].name}
-                                    subtitle={item[1].specialization}
-                                    initialValue={item[1].current}
-                                    onChange={(value) => this.onValueChanged(['skills', item[0], 'current'], value)}
-                                />
-                            )}
+            <HBox style={styles.container}>
+                <VBox style={styles.column}>
+                    <Text style={styles.sectionHeading}>Attributes</Text>
+                    {attributes.map((attr) => (
+                        <EditableListItem
+                            key={attr.key}
+                            label={attr.name}
+                            initial={char[attr.key].toString()}
+                            onChange={(value) => this.onValueChanged([attr.key], value)}
+                            autoCapitalize='words'
                         />
-                    </Card>
+                    ))}
+                </VBox>
+                <VBox style={styles.column}>
+                    <Text style={styles.sectionHeading}>Characteristics</Text>
+                    {STATS.map((stat) => (
+                        <EditableStat
+                            key={stat.key}
+                            label={stat.name}
+                            initial={char.stats[stat.key]}
+                            onChange={(value) => this.onValueChanged(['stats', stat.key], value)}
+                        />
+                    ))}
+                </VBox>
+                <VBox style={styles.column}>
+                    <Text style={styles.sectionHeading}>Skills</Text>
+                    <FlatList
+                        data={skills}
+                        renderItem={({item}) => (
+                            <EditableStat
+                                label={item.name}
+                                specialization={item.specialization}
+                                initial={item.current}
+                                onChange={(value) => this.onValueChanged(['skills', item.key, 'current'], value)}
+                            />
+                        )}
+                    />
                 </VBox>
             </HBox>
         );

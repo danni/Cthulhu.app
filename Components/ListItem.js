@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import {
     StyleSheet,
     Text,
+    TextInput,
 } from 'react-native';
-import { ListItem as RNEListItem } from 'react-native-elements';
 
 import { HBox, VBox } from './Box';
 
@@ -12,12 +12,15 @@ import { HBox, VBox } from './Box';
 const styles = StyleSheet.create({
     main: {
         fontSize: 17,
-        fontWeight: '300',
+        fontWeight: 'normal',
     },
     label: {
         fontSize: 12,
         fontWeight: '300',
         color: '#555',
+    },
+    input: {
+        height: 40,
     },
 });
 
@@ -34,7 +37,7 @@ export class ListItem extends React.Component {
                 {this.props.label
                         ? <Text style={styles.label}>{this.props.label}</Text>
                         : null}
-                <Text style={styles.value}>{this.props.value}</Text>
+                <Text style={styles.main}>{this.props.value}</Text>
             </VBox>
         );
     }
@@ -43,7 +46,8 @@ export class ListItem extends React.Component {
 
 export class EditableListItem extends React.Component {
     static propTypes = {
-        initialValue: PropTypes.string,
+        label: PropTypes.string,
+        initial: PropTypes.string,
         onChange: PropTypes.func,
     };
 
@@ -51,11 +55,11 @@ export class EditableListItem extends React.Component {
         super(props);
 
         this.state = {
-            value: props.initialValue,
+            value: props.initial,
         }
     }
 
-    onBlur() {
+    editingDone() {
         if (this.props.onChange) {
             this.props.onChange(this.state.value);
         }
@@ -63,20 +67,24 @@ export class EditableListItem extends React.Component {
 
     render() {
         const { 
-            initialValue,
+            initial,
             onChange,
             ...rest
         } = this.props;
+
         return (
-            <RNEListItem
-                textInputValue={this.state.value}
-                textInputOnChangeText={(value) => this.setState({ value })}
-                textInputOnBlur={() => this.onBlur()}
-                textInputAutoCapitalize="words"
-                textInput
-                hideChevron
-                {...rest}
-            />
+            <VBox marginTop={4} marginBottom={4}>
+                {this.props.label
+                        ? <Text style={styles.label}>{this.props.label}</Text>
+                        : null}
+                <TextInput
+                    value={this.state.value}
+                    style={styles.input}
+                    onChangeText={(value) => this.setState({ value })}
+                    onEndEditing={() => this.editingDone()}
+                    {...rest}
+                />
+            </VBox>
         );
     }
 }

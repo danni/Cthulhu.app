@@ -3,13 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { orderBy } from 'lodash';
 import {
+    Button,
     FlatList,
     Text,
-    StyleSheet,
 } from 'react-native';
-import {
-    Button,
-} from 'react-native-elements';
+
+import styles from '../styles';
 
 import {
     setValue,
@@ -24,26 +23,6 @@ import { barSetOpen } from '../Reducers/character/ui';
 import { HBox, VBox } from '../Components/Box';
 import { Stat, Bar } from '../Components/Stat';
 import { ListItem } from '../Components/ListItem';
-
-
-const styles = StyleSheet.create({
-    column: {
-        flex: 2,
-        backgroundColor: 'white',
-        margin: 8,
-        padding: 8,
-    },
-
-    characterName: {
-        fontSize: 28,
-        fontWeight: '300',
-    },
-
-    sectionHeading: {
-        fontSize: 22,
-        fontWeight: '300',
-    }
-})
 
 
 @connect((state) => ({
@@ -62,8 +41,8 @@ export default class CharacterScreen extends React.Component {
         title: 'Character',  // FIXME
         headerRight: (
             <Button
-                icon={{ name: 'mode-edit', color: '#037aff' }}
-                backgroundColor="transparent"
+                title="Edit"
+                color="#037aff"
                 onPress={() => navigation.navigate('EditCharacter', {
                     id: navigation.state.id,
                 })}
@@ -94,7 +73,7 @@ export default class CharacterScreen extends React.Component {
             .map(([key, skill]) => ({ key, ...skill })), 'name');
 
         return (
-            <HBox>
+            <HBox style={styles.container}>
                 <VBox style={styles.column}>
                     <Text style={styles.characterName}>{char.name}</Text>
 

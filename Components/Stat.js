@@ -1,17 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { range } from 'lodash';
 import {
     LayoutAnimation,
     Picker,
     ProgressViewIOS,
     StyleSheet,
     Text,
+    TextInput,
     TouchableHighlight,
 } from 'react-native';
-import {
-    ListItem,
-} from 'react-native-elements';
-import { range } from 'lodash';
 
 import { HBox, VBox } from './Box';
 
@@ -19,8 +17,9 @@ import { HBox, VBox } from './Box';
 const styles = StyleSheet.create({
     statLabel: {
         fontSize: 17,
-        fontWeight: '300',
+        fontWeight: 'normal',
     },
+
     statLabelSpecialization: {
         fontSize: 12,
         fontWeight: '300',
@@ -30,7 +29,12 @@ const styles = StyleSheet.create({
     statBlock: {
         fontSize: 28,
         fontWeight: '300',
-    }
+    },
+
+    input: {
+        height: 40,
+        width: 40,
+    },
 });
 
 
@@ -100,7 +104,8 @@ export class Stat extends React.Component {
 
 export class EditableStat extends React.Component {
     static propTypes = {
-        initialValue: PropTypes.number,
+        initial: PropTypes.number,
+        label: PropTypes.string,
         onChange: PropTypes.func,
     };
 
@@ -108,43 +113,62 @@ export class EditableStat extends React.Component {
         super(props);
 
         this.state = {
-            value: props.initialValue || 0,
+            value: props.initial || 0,
         }
     }
 
     onChange(value) {
-        this.setState({ value })
-    }
-
-    onBlur() {
-        let value = this.state.value;
         value = parseInt(value, 10);
         value = Math.min(value, 99);
         value = Math.max(value, 0);
 
-        if (this.props.onChange) {
-            this.props.onChange(value);
-        }
+        this.setState({ value })
+    }
 
-        this.setState({ value });
+    editingDone() {
+        if (this.props.onChange && Number.isInteger(this.state.value)) {
+            this.props.onChange(this.state.value);
+        }
     }
 
     render() {
-        const {
-            initialValue,
+        const { 
+            initial,
             onChange,
             ...rest
         } = this.props;
+
+        let value = this.state.value;
+        if (Number.isInteger(value)) {
+            value = value.toString();
+        } else {
+            value = '';
+        }
+
+        const style = this.props.specialization
+            ? styles.statLabelSpecialization
+            : styles.statLabel;
+
         return (
-            <ListItem
-                textInputValue={this.state.value.toString()}
-                textInputOnChangeText={(value) => this.onChange(value)}
-                textInputOnBlur={() => this.onBlur()}
-                textInputKeyboardType="numeric"
-                textInput
-                hideChevron
-                {...rest}
-            />
+            <HBox expand center>
+                <VBox>
+                    {this.props.label
+                        ? <Text style={style}>{this.props.label}</Text>
+                        : null}
+                    {this.props.specialization
+                        ? <Text style={styles.statLabel}>{this.props.specialization}</Text>
+                        : null}
+                </VBox>
+                <TextInput
+                    value={value}
+                    style={styles.input}
+                    maxLength={2}
+                    keyboardType="numeric"
+                    onChangeText={(value) => this.onChange(value)}
+                    onEndEditing={() => this.editingDone()}
+                    {...rest}
+                />
+            </HBox>
         );
     }
 }

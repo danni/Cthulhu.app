@@ -1,11 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Image, TouchableHighlight } from 'react-native';
-import { Card } from 'react-native-elements';
+import {
+    Image,
+    StyleSheet,
+    TouchableHighlight,
+    Text,
+} from 'react-native';
 
+import styles from '../styles';
 import { VBox, HBox } from '../Components/Box';
 import { load } from '../Reducers/home';
+
+
+const homeStyles = StyleSheet.create({
+    tile: {
+        backgroundColor: 'white',
+        margin: 20,
+        padding: 10,
+    },
+
+    image: {
+        width: 200,
+        height: 200,
+        marginTop: 10,
+        backgroundColor: 'lightgray',
+    },
+});
 
 
 @connect((state) => ({
@@ -38,19 +59,18 @@ export default class HomeScreen extends React.Component {
         const characters = this.props.store.characters;
 
         return (
-            <VBox>
+            <VBox style={styles.container}>
                 <HBox>
                     {characters.map((char) => (
-                        <Card
-                            title={char.name}
+                        <TouchableHighlight
                             key={char.id}
+                            onPress={() => this.onCharacterPress(char.id)}
                         >
-                            <TouchableHighlight
-                                onPress={() => this.onCharacterPress(char.id)}
-                            >
-                                <Image style={{ width: 200, height: 200 }}/>
-                            </TouchableHighlight>
-                        </Card>
+                            <VBox style={homeStyles.tile}>
+                                <Text style={styles.sectionHeading}>{char.name}</Text>
+                                <Image style={homeStyles.image}/>
+                            </VBox>
+                        </TouchableHighlight>
                     ))}
                 </HBox>
             </VBox>
