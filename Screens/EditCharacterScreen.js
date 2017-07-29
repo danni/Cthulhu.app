@@ -5,7 +5,9 @@ import { orderBy } from 'lodash';
 import {
     FlatList,
     Text,
+    TouchableOpacity,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import styles from '../styles';
 
@@ -20,6 +22,7 @@ import {
 import { HBox, VBox } from '../Components/Box';
 import { EditableListItem } from '../Components/ListItem';
 import { EditableStat } from '../Components/Stat';
+import { Modal } from '../Components/Modal';
 
 
 @connect((state) => ({
@@ -36,6 +39,14 @@ export default class EditCharacterScreen extends React.Component {
         navigation: PropTypes.object,
     };
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            showSkillModal: false,
+        };
+    }
+
     componentDidMount() {
         const id = this.props.navigation.state.params.id;
         this.props.dispatch(loadCharacter(id));
@@ -47,6 +58,18 @@ export default class EditCharacterScreen extends React.Component {
 
     onSkillDeleted(key) {
         this.props.dispatch(deleteSkill(key));
+    }
+
+    onPressAddSkill() {
+        this.setState({ showSkillModal: true });
+    }
+
+    onCancelAddSkill() {
+        this.setState({ showSkillModal: false });
+    }
+
+    onAddSkill() {
+        this.setState({ showSkillModal: false });
     }
 
     render() {
@@ -86,7 +109,23 @@ export default class EditCharacterScreen extends React.Component {
                     ))}
                 </VBox>
                 <VBox style={styles.column}>
-                    <Text style={styles.sectionHeading}>Skills</Text>
+                    <HBox expand marginRight={10}>
+                        <Text style={styles.sectionHeading}>Skills</Text>
+                        <TouchableOpacity onPress={() => this.onPressAddSkill()}>
+                            <Icon name="ios-add" size={30} />
+                        </TouchableOpacity>
+                    </HBox>
+                    <Modal
+                        visible={this.state.showSkillModal}
+                        title="Add Skill"
+                        action="Add"
+                        onCancel={() => this.onCancelAddSkill()}
+                        onSave={() => this.onAddSkill()}
+                    >
+                        <EditableListItem label="Skill" />
+                        <EditableListItem label="Specialization (Optional)" />
+                    </Modal>
+
                     <FlatList
                         data={skills}
                         renderItem={({item}) => (
