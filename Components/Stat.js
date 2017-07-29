@@ -94,7 +94,9 @@ export class Stat extends React.Component {
         let left = null;
         let style = styles.statLabel;
 
-        if (this.props.skill) {
+        if (this.props.used === null) {
+            left = (<HBox width={26} />);
+        } else if (this.props.skill) {
             left = (
                 <TouchableOpacity
                     onPress={() => this.onLeftPress()}

@@ -103,7 +103,8 @@ export default class CharacterScreen extends React.Component {
     render() {
         const char = this.props.character;
         const skills = orderBy(Object.entries(char.skills)
-            .map(([key, skill]) => ({ key, ...skill })), 'name');
+            .map(([key, skill]) => ({ key, ...skill })),
+            ['name', 'specialization']);
 
         return (
             <HBox style={styles.container}>

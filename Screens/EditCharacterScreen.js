@@ -52,7 +52,8 @@ export default class EditCharacterScreen extends React.Component {
     render() {
         const char = this.props.character;
         const skills = orderBy(Object.entries(char.skills)
-            .map(([key, skill]) => ({ key, ...skill })), 'name');
+            .map(([key, skill]) => ({ key, ...skill })),
+            ['name', 'specialization']);
         // Include character name in the list of editable attributes
         const attributes = [{
             key: 'name',
