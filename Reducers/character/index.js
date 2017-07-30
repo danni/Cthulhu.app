@@ -3,6 +3,7 @@
 // For UI-state, see Reducers/character/ui
 
 import { fromJS } from 'immutable';
+import uuid from 'uuid/v1';
 
 const initial = fromJS({
     id: null,  // Used for storing the character
@@ -580,6 +581,13 @@ export const toggleSkillUsed = (skill) => ({
     skill,
 });
 
+export const ADD_SKILL = 'character/ADD_SKILL';
+export const addSkill = (skill, specialization) => ({
+    type: ADD_SKILL,
+    skill,
+    specialization,
+});
+
 export const DELETE_SKILL = 'character/DELETE_SKILL';
 export const deleteSkill = (skill) => ({
     type: DELETE_SKILL,
@@ -672,6 +680,17 @@ export default (state = initial, action) => {
             state = state
                 .setIn(['skills', action.skill, 'used'],
                     !state.getIn(['skills', action.skill, 'used']));
+            break;
+
+        case ADD_SKILL:
+            console.log("ADD SKILL");
+            state = state
+                .setIn(['skills', uuid()], fromJS({
+                    name: action.skill,
+                    specialization: action.specialization,
+                    current: 0,
+                    used: false,
+                }));
             break;
 
         case DELETE_SKILL:

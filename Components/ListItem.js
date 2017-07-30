@@ -65,6 +65,10 @@ export class EditableListItem extends React.Component {
         }
     }
 
+    getValue() {
+        return this.state.value;
+    }
+
     render() {
         const { 
             initial,

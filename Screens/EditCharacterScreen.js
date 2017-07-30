@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import styles from '../styles';
 
 import {
+    addSkill,
     deleteSkill,
     loadCharacter,
     setValue,
@@ -70,6 +71,9 @@ export default class EditCharacterScreen extends React.Component {
 
     onAddSkill() {
         this.setState({ showSkillModal: false });
+        const skill = this._skillModalSkill.getValue();
+        const specialization = this._skillModalSpecialization.getValue();
+        this.props.dispatch(addSkill(skill, specialization));
     }
 
     render() {
@@ -122,8 +126,14 @@ export default class EditCharacterScreen extends React.Component {
                         onCancel={() => this.onCancelAddSkill()}
                         onSave={() => this.onAddSkill()}
                     >
-                        <EditableListItem label="Skill" />
-                        <EditableListItem label="Specialization (Optional)" />
+                        <EditableListItem
+                            label="Skill"
+                            ref={(elem) => {this._skillModalSkill = elem}}
+                        />
+                        <EditableListItem
+                            label="Specialization (Optional)"
+                            ref={(elem) => {this._skillModalSpecialization = elem}}
+                        />
                     </Modal>
 
                     <FlatList
