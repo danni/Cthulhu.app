@@ -3,6 +3,7 @@
 // For UI-state, see Reducers/character/ui
 
 import { fromJS } from 'immutable';
+import { isEqual } from 'lodash';
 import uuid from 'uuid/v1';
 
 const initial = fromJS({
@@ -733,6 +734,20 @@ export default (state = initial, action) => {
                 .deleteIn(['skills', action.skill]);
 
         case SET_VALUE:
+            if (isEqual(action.key, ['hp', 'current'])) {
+                // We need to access the state with all of the calculated
+                // values
+                const _state = selectCharacter(state);
+                const current = _state.getIn(['hp', 'current']);
+                const max = _state.getIn(['hp', 'max']);
+
+                const delta = current - action.value;
+
+                if (delta >= Math.floor(max / 2)) {
+                    state = state.setIn(['hp', 'major_wound'], true);
+                }
+            }
+
             return state
                 .setIn(action.key, action.value);
 
