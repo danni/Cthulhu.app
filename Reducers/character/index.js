@@ -16,21 +16,21 @@ const initial = fromJS({
     residence: '-',
 
     hp: {
-        current: 9,  // Current hit points
-        today: 9,  // Hit points at the start of the day
+        current: null,  // Current hit points
+        today: null,  // Hit points at the start of the day
         // Max is calculated
     },
     san: {
-        current: 80,  // Current sanity
-        today: 80,  // Sanity at the start of the day
+        current: null,  // Current sanity
+        today: null,  // Sanity at the start of the day
         // Max is calculated
     },
     luck: {
-        current: 65,
+        current: 50,
         max: 99,
     },
     mp: {
-        current: 16,
+        current: null,
         // Max is calculated
     },
 
@@ -727,12 +727,42 @@ export default (state = initial, action) => {
             break;
     }
 
+    const stats = state.get('stats').toJS();
+    // Max HP is (CON + SIZ) / 10. pg 49.
+    const maxHP = (stats.con + stats.siz) / 10;
+    // POW / 5. pg 64
+    const maxMP = Math.floor(stats.pow / 5);
+
     // Derive calculated values
-    return state
-        // Max HP is (CON + SIZ) / 10. pg 49.
-        .setIn(['hp', 'max'], (state.getIn(['stats', 'con']) + state.getIn(['stats', 'siz'])) / 10)
+    state = state
         // Max SAN is 99 - Cthulhu Mythos
         .setIn(['san', 'max'], 99 - state.getIn(['skills', 'mythos', 'current']))
-        // POW / 5. pg 64
-        .setIn(['mp', 'max'], state.getIn(['stats', 'pow']) / 5);
+        .setIn(['hp', 'max'], maxHP)
+        .setIn(['mp', 'max'], maxMP);
+
+    // Set current HP if required
+    if (state.getIn(['hp', 'current']) === null) {
+        state = state.setIn(['hp', 'current'], maxHP);
+    }
+
+    // Set today's HP if required
+    if (state.getIn(['hp', 'today']) === null) {
+        state = state.setIn(['hp', 'today'], maxHP);
+    }
+
+    // Set current SAN if required
+    if (state.getIn(['san', 'current']) === null) {
+        state = state.setIn(['san', 'current'], stats.pow);
+    }
+
+    // Set today's SAN if required
+    if (state.getIn(['san', 'today']) === null) {
+        state = state.setIn(['san', 'today'], stats.pow);
+    }
+
+    if (state.getIn(['mp', 'current']) === null) {
+        state = state.setIn(['mp', 'current'], maxMP);
+    }
+
+    return state;
 };
