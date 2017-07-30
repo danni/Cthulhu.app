@@ -7,6 +7,7 @@ import {
 } from './Reducers/home';
 import {
     ADD_SKILL,
+    EDIT_SKILL,
     DELETE_SKILL,
     LOAD_CHARACTER,
     SET_VALUE,
@@ -54,6 +55,7 @@ function* watchCharacterChanges() {
         // AsyncStorage
         yield take([
             ADD_SKILL,
+            EDIT_SKILL,
             DELETE_SKILL,
             SET_VALUE,
             TOGGLE_SKILL_USED,

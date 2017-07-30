@@ -582,9 +582,17 @@ export const toggleSkillUsed = (skill) => ({
 });
 
 export const ADD_SKILL = 'character/ADD_SKILL';
-export const addSkill = (skill, specialization) => ({
+export const addSkill = (name, specialization) => ({
     type: ADD_SKILL,
+    name,
+    specialization,
+});
+
+export const EDIT_SKILL = 'character/EDIT_SKILL';
+export const editSkill = (skill, name, specialization) => ({
+    type: EDIT_SKILL,
     skill,
+    name,
     specialization,
 });
 
@@ -683,13 +691,20 @@ export default (state = initial, action) => {
             break;
 
         case ADD_SKILL:
-            console.log("ADD SKILL");
             state = state
                 .setIn(['skills', uuid()], fromJS({
-                    name: action.skill,
+                    name: action.name,
                     specialization: action.specialization,
                     current: 0,
                     used: false,
+                }));
+            break;
+
+        case EDIT_SKILL:
+            state = state
+                .mergeIn(['skills', action.skill], fromJS({
+                    name: action.name,
+                    specialization: action.specialization,
                 }));
             break;
 

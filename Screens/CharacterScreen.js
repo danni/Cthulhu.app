@@ -10,7 +10,7 @@ import {
     TouchableOpacity,
     Text,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Octicons';
+import Icon from 'react-native-vector-icons/SimpleLineIcons';
 
 import styles from '../styles';
 
@@ -77,7 +77,7 @@ export default class CharacterScreen extends React.Component {
                 <Icon
                     name="pencil"
                     color="#037aff"
-                    size={30}
+                    size={25}
                 />
             </TouchableOpacity>
         ),

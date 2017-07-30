@@ -11,6 +11,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import SLIcon from 'react-native-vector-icons/SimpleLineIcons';
 import Swipeable from 'react-native-swipeable';
 
 import { HBox, VBox } from './Box';
@@ -45,6 +46,13 @@ const styles = StyleSheet.create({
     bar: {
         paddingTop: 10,
         paddingBottom: 10,
+    },
+
+    editSwipe: {
+        backgroundColor: 'rgb(0, 122, 255)',
+        padding: 12,
+        paddingTop: 13,
+        paddingLeft: 18,
     },
 
     deleteSwipe: {
@@ -138,6 +146,7 @@ export class EditableStat extends React.Component {
         label: PropTypes.string,
         onChange: PropTypes.func,
         onDelete: PropTypes.func,
+        onEdit: PropTypes.func,
         specialization: PropTypes.string,
     };
 
@@ -168,6 +177,7 @@ export class EditableStat extends React.Component {
             initial,
             onChange,
             onDelete,
+            onEdit,
             label,
             specialization,
             ...rest
@@ -207,10 +217,33 @@ export class EditableStat extends React.Component {
             </HBox>
         );
 
-        if (onDelete) {
-            const button = (
+        const buttons = [];
+
+        if (onEdit) {
+            buttons.push(
                 <TouchableOpacity
-                    onPress={() => onDelete()}
+                    onPress={() => {
+                        this._swipeable.recenter();
+                        onEdit();
+                    }}
+                    style={styles.editSwipe}
+                >
+                    <SLIcon
+                        name="pencil"
+                        size={25}
+                        color="white"
+                    />
+                </TouchableOpacity>
+            );
+        }
+
+        if (onDelete) {
+            buttons.push(
+                <TouchableOpacity
+                    onPress={() => {
+                        this._swipeable.recenter();
+                        onDelete();
+                    }}
                     style={styles.deleteSwipe}
                 >
                     <Icon
@@ -220,10 +253,14 @@ export class EditableStat extends React.Component {
                     />
                 </TouchableOpacity>
             );
+        }
 
+        if (buttons.length > 0) {
             return (
                 <Swipeable
-                    rightButtons={[button]}
+                    ref={(ref) => {this._swipeable = ref}}
+                    rightButtonWidth={60}
+                    rightButtons={buttons}
                 >
                     {row}
                 </Swipeable>

@@ -13,6 +13,7 @@ import styles from '../styles';
 
 import {
     addSkill,
+    editSkill,
     deleteSkill,
     loadCharacter,
     setValue,
@@ -45,6 +46,7 @@ export default class EditCharacterScreen extends React.Component {
 
         this.state = {
             showSkillModal: false,
+            selectedSkill: null,
         };
     }
 
@@ -57,23 +59,46 @@ export default class EditCharacterScreen extends React.Component {
         this.props.dispatch(setValue(key, value));
     }
 
-    onSkillDeleted(key) {
+    onDeleteSkill(key) {
         this.props.dispatch(deleteSkill(key));
     }
 
-    onPressAddSkill() {
-        this.setState({ showSkillModal: true });
-    }
-
-    onCancelAddSkill() {
-        this.setState({ showSkillModal: false });
-    }
-
     onAddSkill() {
-        this.setState({ showSkillModal: false });
-        const skill = this._skillModalSkill.getValue();
+        this.setState({
+            showSkillModal: true,
+            selectedSkill: null,
+        });
+    }
+
+    onEditSkill(key) {
+        this.setState({
+            showSkillModal: true,
+            selectedSkill: key,
+        });
+    }
+
+    onCancelSaveSkill() {
+        this.setState({
+            showSkillModal: false,
+            selectedSkill: null,
+        });
+    }
+
+    onSaveSkill() {
+        const name = this._skillModalSkill.getValue();
         const specialization = this._skillModalSpecialization.getValue();
-        this.props.dispatch(addSkill(skill, specialization));
+
+        if (this.state.selectedSkill) {
+            this.props.dispatch(editSkill(this.state.selectedSkill,
+                                          name, specialization));
+        } else {
+            this.props.dispatch(addSkill(name, specialization));
+        }
+
+        this.setState({
+            showSkillModal: false,
+            selectedSkill: null,
+        });
     }
 
     render() {
@@ -115,24 +140,26 @@ export default class EditCharacterScreen extends React.Component {
                 <VBox style={styles.column}>
                     <HBox expand marginRight={10}>
                         <Text style={styles.sectionHeading}>Skills</Text>
-                        <TouchableOpacity onPress={() => this.onPressAddSkill()}>
+                        <TouchableOpacity onPress={() => this.onAddSkill()}>
                             <Icon name="ios-add" size={30} />
                         </TouchableOpacity>
                     </HBox>
                     <Modal
                         visible={this.state.showSkillModal}
-                        title="Add Skill"
-                        action="Add"
-                        onCancel={() => this.onCancelAddSkill()}
-                        onSave={() => this.onAddSkill()}
+                        title={this.state.selectedSkill ? "Edit Skill" : "Add Skill"}
+                        action={this.state.selectedSkill ? "Save" : "Add"}
+                        onCancel={() => this.onCancelSaveSkill()}
+                        onSave={() => this.onSaveSkill()}
                     >
                         <EditableListItem
                             label="Skill"
                             ref={(elem) => {this._skillModalSkill = elem}}
+                            initial={this.state.selectedSkill ? char.skills[this.state.selectedSkill].name : null}
                         />
                         <EditableListItem
                             label="Specialization (Optional)"
                             ref={(elem) => {this._skillModalSpecialization = elem}}
+                            initial={this.state.selectedSkill ? char.skills[this.state.selectedSkill].specialization : null}
                         />
                     </Modal>
 
@@ -144,7 +171,8 @@ export default class EditCharacterScreen extends React.Component {
                                 specialization={item.specialization}
                                 initial={item.current}
                                 onChange={(value) => this.onValueChanged(['skills', item.key, 'current'], value)}
-                                onDelete={() => this.onSkillDeleted(item.key)}
+                                onEdit={() => this.onEditSkill(item.key)}
+                                onDelete={() => this.onDeleteSkill(item.key)}
                             />
                         )}
                     />
