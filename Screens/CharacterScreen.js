@@ -18,8 +18,8 @@ import styles from '../styles';
 import {
     selectCharacter,
     setValue,
-    loadCharacter,
     toggleSkillUsed,
+    toggleMajorWound,
     ATTRIBUTES,
     BARS,
     STATS,
@@ -118,13 +118,18 @@ export default class CharacterScreen extends React.Component {
         const char = this.props.character;
 
         return (
-            <HBox>
-                <Icon
-                    name={char.hp.major_wound ? 'ios-alert' : 'ios-radio-button-off'}
-                    size={30}
-                />
-                <Text style={[styles.label, { marginLeft: 10, marginTop: 4 }]}>Major wound</Text>
-            </HBox>
+            <TouchableOpacity
+                onPress={() => this.props.dispatch(toggleMajorWound())}
+            >
+                <HBox>
+                    <Icon
+                        name={char.hp.major_wound ? 'ios-alert' : 'ios-radio-button-off'}
+                        size={20}
+                        color={char.hp.major_wound ? 'darkred' : null}
+                    />
+                    <Text style={[styles.label, { marginLeft: 5, marginTop: 0 }]}>Major wound</Text>
+                </HBox>
+            </TouchableOpacity>
         );
     }
 

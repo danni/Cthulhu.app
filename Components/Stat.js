@@ -112,7 +112,7 @@ export class Stat extends React.Component {
                     <Icon
                         name={this.props.used ? 'ios-checkmark-circle' : 'ios-radio-button-off'}
                         size={30}
-                        color={'#212141'}
+                        color={this.props.used ? 'darkgreen' : null}
                     />
                 </TouchableOpacity>
             );

@@ -574,6 +574,8 @@ const initial = fromJS({
     }
 });
 
+
+// Actions
 export const NEW_CHARACTER = 'character/NEW_CHARACTER';
 export const newCharacter = (id) => ({
     type: NEW_CHARACTER,
@@ -586,8 +588,11 @@ export const deleteCharacter = (id) => ({
     id,
 });
 
+export const TOGGLE_MAJOR_WOUND = 'character/TOGGLE_MAJOR_WOUND';
+export const toggleMajorWound = () => ({
+    type: TOGGLE_MAJOR_WOUND,
+});
 
-// Actions
 export const TOGGLE_SKILL_USED = 'character/TOGGLE_SKILL_USED';
 export const toggleSkillUsed = (skill) => ({
     type: TOGGLE_SKILL_USED,
@@ -697,6 +702,11 @@ export const STATS = [{
 // Reducer
 export default (state = initial, action) => {
     switch (action.type) {
+        case TOGGLE_MAJOR_WOUND:
+            return state
+                .setIn(['hp', 'major_wound'],
+                    !state.getIn(['hp', 'major_wound']));
+
         case TOGGLE_SKILL_USED:
             return state
                 .setIn(['skills', action.skill, 'used'],
@@ -776,6 +786,15 @@ export function selectCharacter(state) {
 
     if (state.getIn(['mp', 'current']) === null) {
         state = state.setIn(['mp', 'current'], maxMP);
+    }
+
+    if (state.getIn(['skills', 'dodge', 'current']) === null) {
+        state = state.setIn(['skills', 'dodge', 'current'],
+            Math.floor(stats.dex / 2));
+    }
+
+    if (state.getIn(['skills', 'language_own', 'current']) === null) {
+        state = state.setIn(['skills', 'language_own', 'current'], stats.edu);
     }
 
     return state;

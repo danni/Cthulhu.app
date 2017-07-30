@@ -15,7 +15,6 @@ import {
     addSkill,
     editSkill,
     deleteSkill,
-    loadCharacter,
     setValue,
     ATTRIBUTES,
     STATS,
