@@ -100,11 +100,52 @@ export default class CharacterScreen extends React.Component {
         this.props.dispatch(toggleSkillUsed(key));
     }
 
+    renderBar(bar) {
+        const char = this.props.character;
+
+        return (
+            <Bar
+                key={bar.key}
+                name={bar.name}
+                value={char[bar.key].current}
+                max={char[bar.key].max}
+                color={bar.color}
+                open={this.props.ui.openBar === bar.key}
+                setOpen={(value) => this.onBarOpened(value ? bar.key : null)}
+                onChange={(value) => this.onBarChanged(bar.key, value)}
+            />
+        );
+    }
+
+    renderSanity() {
+        const char = this.props.character;
+
+        const diff = char.san.current - char.san.today;
+
+        if (diff > 0) {
+            return (
+                <HBox expand>
+                    <Text>Gained today</Text>
+                    <Text>{diff}</Text>
+                </HBox>
+            );
+        } else {
+            return (
+                <HBox expand>
+                    <Text>Lost today</Text>
+                    <Text>{Math.abs(diff)}/{Math.floor(char.san.today / 5)}</Text>
+                </HBox>
+            );
+        }
+    }
+
     render() {
         const char = this.props.character;
         const skills = orderBy(Object.entries(char.skills)
             .map(([key, skill]) => ({ key, ...skill })),
             ['name', 'specialization']);
+
+        const [hp, san, luck, mp] = BARS;
 
         return (
             <HBox style={styles.container}>
@@ -122,18 +163,12 @@ export default class CharacterScreen extends React.Component {
                             </Text>
                         </VBox>
 
-                        {BARS.map((bar) => (
-                            <Bar
-                                key={bar.key}
-                                name={bar.name}
-                                value={char[bar.key].current}
-                                max={char[bar.key].max}
-                                color={bar.color}
-                                open={this.props.ui.openBar === bar.key}
-                                setOpen={(value) => this.onBarOpened(value ? bar.key : null)}
-                                onChange={(value) => this.onBarChanged(bar.key, value)}
-                        />
-                        ))}
+                        {this.renderBar(hp)}
+                        {this.renderBar(san)}
+                        {this.renderSanity()}
+                        {this.renderBar(luck)}
+                        {this.renderBar(mp)}
+
                         {ATTRIBUTES.map((attr) => (
                             <ListItem
                                 key={attr.key}
