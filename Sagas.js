@@ -63,6 +63,10 @@ function* watchCharacterChanges() {
         const state = yield select();
         const char = state.character.toJS();
 
+        if (char.id === null) {
+            console.error("No one set id");
+        }
+
         // Store the character sheet to JSON
         yield call(AsyncStorage.setItem,
             `@character:${char.id}`,

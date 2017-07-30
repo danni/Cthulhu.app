@@ -10,11 +10,13 @@ import {
     TouchableOpacity,
     Text,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/SimpleLineIcons';
+import Icon from 'react-native-vector-icons/Ionicons';
+import SLIcon from 'react-native-vector-icons/SimpleLineIcons';
 
 import styles from '../styles';
 
 import {
+    selectCharacter,
     setValue,
     loadCharacter,
     toggleSkillUsed,
@@ -54,7 +56,7 @@ const charStyles = StyleSheet.create({
 
 
 @connect((state) => ({
-    character: state.character.toJS(),
+    character: selectCharacter(state.character).toJS(),
     ui: state.character_ui.toJS(),
 }))
 export default class CharacterScreen extends React.Component {
@@ -74,7 +76,7 @@ export default class CharacterScreen extends React.Component {
                     id: navigation.state.id,
                 })}
             >
-                <Icon
+                <SLIcon
                     name="pencil"
                     color="#037aff"
                     size={25}
@@ -82,11 +84,6 @@ export default class CharacterScreen extends React.Component {
             </TouchableOpacity>
         ),
     });
-
-    componentDidMount() {
-        const id = this.props.navigation.state.params.id;
-        this.props.dispatch(loadCharacter(id));
-    }
 
     onBarOpened(key) {
         this.props.dispatch(barSetOpen(key));
@@ -117,9 +114,22 @@ export default class CharacterScreen extends React.Component {
         );
     }
 
-    renderSanity() {
+    renderMajorWound() {
         const char = this.props.character;
 
+        return (
+            <HBox>
+                <Icon
+                    name={char.hp.major_wound ? 'ios-alert' : 'ios-radio-button-off'}
+                    size={30}
+                />
+                <Text style={[styles.label, { marginLeft: 10, marginTop: 4 }]}>Major wound</Text>
+            </HBox>
+        );
+    }
+
+    renderSanity() {
+        const char = this.props.character;
         const diff = char.san.current - char.san.today;
 
         if (diff > 0) {
@@ -164,6 +174,7 @@ export default class CharacterScreen extends React.Component {
                         </VBox>
 
                         {this.renderBar(hp)}
+                        {this.renderMajorWound()}
                         {this.renderBar(san)}
                         {this.renderSanity()}
                         {this.renderBar(luck)}

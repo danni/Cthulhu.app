@@ -100,7 +100,7 @@ export class Stat extends React.Component {
 
     render() {
         let left = null;
-        let style = styles.statLabel;
+        let style = [styles.statLabel, { marginTop: 4 }];
 
         if (this.props.used === null) {
             left = (<HBox width={26} />);
@@ -119,7 +119,7 @@ export class Stat extends React.Component {
         }
 
         if (this.props.specialization) {
-            style = styles.statLabelSpecialization;
+            style = [styles.statLabelSpecialization, { marginTop: -4 }];
         }
 
         return (
@@ -129,7 +129,7 @@ export class Stat extends React.Component {
                     <VBox expand marginLeft={10}>
                         <Text style={style}>{this.props.name}</Text>
                         {this.props.specialization
-                            ? <Text style={styles.statLabel}>{this.props.specialization}</Text>
+                            ? <Text style={[styles.statLabel, { top: -3 }]}>{this.props.specialization}</Text>
                             : null}
                         </VBox>
                 </HBox>

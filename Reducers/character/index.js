@@ -19,6 +19,7 @@ const initial = fromJS({
         current: null,  // Current hit points
         today: null,  // Hit points at the start of the day
         // Max is calculated
+        major_wound: false,
     },
     san: {
         current: null,  // Current sanity
@@ -573,6 +574,18 @@ const initial = fromJS({
     }
 });
 
+export const NEW_CHARACTER = 'character/NEW_CHARACTER';
+export const newCharacter = (id) => ({
+    type: NEW_CHARACTER,
+    id,
+});
+
+export const DELETE_CHARACTER = 'character/DELETE_CHARACTER';
+export const deleteCharacter = (id) => ({
+    type: DELETE_CHARACTER,
+    id,
+});
+
 
 // Actions
 export const TOGGLE_SKILL_USED = 'character/TOGGLE_SKILL_USED';
@@ -685,48 +698,49 @@ export const STATS = [{
 export default (state = initial, action) => {
     switch (action.type) {
         case TOGGLE_SKILL_USED:
-            state = state
+            return state
                 .setIn(['skills', action.skill, 'used'],
                     !state.getIn(['skills', action.skill, 'used']));
-            break;
 
         case ADD_SKILL:
-            state = state
+            return state
                 .setIn(['skills', uuid()], fromJS({
                     name: action.name,
                     specialization: action.specialization,
                     current: 0,
                     used: false,
                 }));
-            break;
 
         case EDIT_SKILL:
-            state = state
+            return state
                 .mergeIn(['skills', action.skill], fromJS({
                     name: action.name,
                     specialization: action.specialization,
                 }));
-            break;
 
         case DELETE_SKILL:
-            state = state
+            return state
                 .deleteIn(['skills', action.skill]);
-            break;
 
         case SET_VALUE:
-            state = state
+            return state
                 .setIn(action.key, action.value);
-            break;
+
+        // These actions reinitialize the store to a clean state
+        case NEW_CHARACTER:
+            return initial
+                .set('id', action.id);
 
         case LOAD_CHARACTER_DONE:
-            state = state
+            return initial
                 .mergeDeep(action.data);
-            break;
 
         default:
-            break;
+            return state
     }
+}
 
+export function selectCharacter(state) {
     const stats = state.get('stats').toJS();
     // Max HP is (CON + SIZ) / 10. pg 49.
     const maxHP = (stats.con + stats.siz) / 10;
@@ -765,4 +779,4 @@ export default (state = initial, action) => {
     }
 
     return state;
-};
+}

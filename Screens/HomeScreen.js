@@ -7,10 +7,15 @@ import {
     TouchableOpacity,
     Text,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import uuid from 'uuid/v1';
 
 import styles from '../styles';
-import { VBox, HBox } from '../Components/Box';
+
 import { load } from '../Reducers/home';
+import { newCharacter, loadCharacter } from '../Reducers/character';
+
+import { VBox, HBox } from '../Components/Box';
 
 
 const homeStyles = StyleSheet.create({
@@ -26,6 +31,10 @@ const homeStyles = StyleSheet.create({
         marginTop: 10,
         backgroundColor: 'lightgray',
     },
+
+    newButton: {
+        padding: 10,
+    },
 });
 
 
@@ -33,9 +42,27 @@ const homeStyles = StyleSheet.create({
     store: state.home.toJS(),
 }))
 export default class HomeScreen extends React.Component {
-    static navigationOptions = {
+
+    static navigationOptions = ({ navigation }) => ({
         title: 'Characters',
-    };
+        headerRight: (
+            <TouchableOpacity
+                style={homeStyles.newButton}
+                onPress={() => {
+                    const id = uuid();
+                    navigation.dispatch(newCharacter(id));
+                    navigation.navigate('Character', { id, });
+                    navigation.navigate('EditCharacter', { id, });
+                }}
+            >
+                <Icon
+                    name="ios-add"
+                    color="#037aff"
+                    size={30}
+                />
+            </TouchableOpacity>
+        ),
+    });
 
     static propTypes = {
         dispatch: PropTypes.func,
@@ -44,11 +71,14 @@ export default class HomeScreen extends React.Component {
     };
 
     componentDidMount() {
+        // FIXME: need to call this when we return back to this page
         this.props.dispatch(load());
     }
 
     onCharacterPress(id) {
         const { navigate } = this.props.navigation;
+
+        this.props.dispatch(loadCharacter(id));
 
         navigate('Character', {
             id,

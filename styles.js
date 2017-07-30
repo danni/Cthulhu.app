@@ -25,5 +25,11 @@ export default StyleSheet.create({
     sectionHeading: {
         fontSize: 22,
         fontWeight: '300',
-    }
+    },
+
+    label: {
+        fontSize: 17,
+        fontWeight: 'normal',
+    },
+
 })

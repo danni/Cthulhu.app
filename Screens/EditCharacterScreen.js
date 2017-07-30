@@ -50,11 +50,6 @@ export default class EditCharacterScreen extends React.Component {
         };
     }
 
-    componentDidMount() {
-        const id = this.props.navigation.state.params.id;
-        this.props.dispatch(loadCharacter(id));
-    }
-
     onValueChanged(key, value) {
         this.props.dispatch(setValue(key, value));
     }
