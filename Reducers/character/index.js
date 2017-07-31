@@ -26,6 +26,7 @@ const initial = fromJS({
         current: null,  // Current sanity
         today: null,  // Sanity at the start of the day
         // Max is calculated
+        status: 'sane',
     },
     luck: {
         current: 50,
@@ -743,8 +744,19 @@ export default (state = initial, action) => {
 
                 const delta = current - action.value;
 
-                if (delta >= Math.floor(max / 2)) {
+                if (delta >= max / 2) {
                     state = state.setIn(['hp', 'major_wound'], true);
+                }
+            } else if (isEqual(action.key, ['san', 'current'])) {
+                // We need to access the state with all of the calculated
+                // values
+                const _state = selectCharacter(state);
+                const today = _state.getIn(['san', 'today']);
+                const threshold = _state.getIn(['san', 'threshold']);
+                const delta = action.value - today;
+
+                if (delta < 0 && Math.abs(delta) > threshold) {
+                    state = state.setIn(['san', 'status'], 'indefinite');
                 }
             }
 
@@ -811,6 +823,13 @@ export function selectCharacter(state) {
     if (state.getIn(['skills', 'language_own', 'current']) === null) {
         state = state.setIn(['skills', 'language_own', 'current'], stats.edu);
     }
+
+    // Set the SAN threshold
+    const sanToday = state.getIn(['san', 'today']);
+    const sanCurrent = state.getIn(['san', 'current']);
+    state = state
+        .setIn(['san', 'threshold'], Math.floor(sanToday / 5))
+        .setIn(['san', 'delta'], sanCurrent - sanToday);
 
     return state;
 }

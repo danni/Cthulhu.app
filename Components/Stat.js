@@ -304,8 +304,8 @@ export class Bar extends React.Component {
             >
                 <VBox>
                     <HBox expand marginBottom={8}>
-                        <Text>{this.props.name}</Text>
-                        <Text>{this.props.value}/{this.props.max}</Text>
+                        <Text style={styles.statLabel}>{this.props.name}</Text>
+                        <Text style={styles.statLabel}>{this.props.value}/{this.props.max}</Text>
                     </HBox>
                     <ProgressViewIOS
                         progress={this.props.value / this.props.max}

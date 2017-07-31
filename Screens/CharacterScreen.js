@@ -5,6 +5,7 @@ import { orderBy } from 'lodash';
 import {
     FlatList,
     Image,
+    Picker,
     ScrollView,
     StyleSheet,
     TouchableOpacity,
@@ -51,7 +52,12 @@ const charStyles = StyleSheet.create({
         position: 'absolute',
         textAlign: 'center',
         width: '100%',
-    }
+    },
+
+    iconLabel: {
+        marginLeft: 5,
+        marginTop: 0,
+    },
 });
 
 
@@ -127,31 +133,112 @@ export default class CharacterScreen extends React.Component {
                         size={20}
                         color={char.hp.major_wound ? 'darkred' : null}
                     />
-                    <Text style={[styles.label, { marginLeft: 5, marginTop: 0 }]}>Major wound</Text>
+                    <Text style={[styles.label, charStyles.iconLabel]}>
+                        {char.hp.major_wound ? 'Major wound' : 'No major wound'}
+                    </Text>
                 </HBox>
             </TouchableOpacity>
         );
     }
 
-    renderSanity() {
+    renderDying() {
         const char = this.props.character;
-        const diff = char.san.current - char.san.today;
 
-        if (diff > 0) {
+
+        if (char.hp.current === 0) {
+            return (
+                <HBox>
+                    <Icon
+                        name={char.hp.major_wound ? 'ios-pulse' : 'ios-medkit'}
+                        size={20}
+                        color="darkred"
+                    />
+                    <Text style={[styles.label, charStyles.iconLabel]}>
+                        {char.hp.major_wound ? 'Dying' : 'Unconscious'}
+                    </Text>
+                </HBox>
+            );
+        } else {
+            return null;
+        }
+    }
+
+    renderSanityToday() {
+        const char = this.props.character;
+
+        if (char.san.delta > 0) {
             return (
                 <HBox expand>
                     <Text>Gained today</Text>
-                    <Text>{diff}</Text>
+                    <Text>{char.san.delta}</Text>
                 </HBox>
             );
         } else {
             return (
                 <HBox expand>
                     <Text>Lost today</Text>
-                    <Text>{Math.abs(diff)}/{Math.floor(char.san.today / 5)}</Text>
+                    <Text>{Math.abs(char.san.delta)}/{char.san.threshold}</Text>
                 </HBox>
             );
         }
+    }
+
+    renderSanity() {
+        const char = this.props.character;
+        let icon = 'ios-radio-button-off';
+        let text = 'Sane';
+        let color = 'black';
+        let picker = null;
+        let touchAction = 'sanStatus';
+
+        if (char.san.current === 0) {
+            icon = 'ios-sad';
+            text = 'Permanently insane';
+            color = 'purple';
+        } else if (char.san.status === 'indefinite') {
+            icon = 'ios-alert';
+            text = 'Indefinitely insane';
+            color = 'purple';
+        } else if (char.san.status === 'temporary') {
+            icon = 'ios-timer';
+            text = 'Temporarily insane';
+            color = 'purple';
+        }
+
+        if (this.props.ui.openBar === 'sanStatus') {
+            touchAction = null;
+            picker = (
+                <Picker
+                    selectedValue={char.san.status}
+                    onValueChange={(value) => {
+                        this.props.dispatch(setValue(['san', 'status'], value));
+                        this.onBarOpened(null);
+                    }}
+                >
+                    <Picker.Item value="sane" label="Sane" />
+                    <Picker.Item value="temporary" label="Temporarily Insane" />
+                    <Picker.Item value="indefinite" label="Indefinitely Insane" />
+                </Picker>
+            );
+        }
+
+        return (
+            <TouchableOpacity onPress={() => this.onBarOpened(touchAction)}>
+                <VBox>
+                    <HBox marginTop={5}>
+                        <Icon
+                            name={icon}
+                            size={20}
+                            color={color}
+                        />
+                        <Text style={[styles.label, charStyles.iconLabel]}>
+                            {text}
+                        </Text>
+                    </HBox>
+                    {picker}
+                </VBox>
+            </TouchableOpacity>
+        );
     }
 
     render() {
@@ -180,7 +267,9 @@ export default class CharacterScreen extends React.Component {
 
                         {this.renderBar(hp)}
                         {this.renderMajorWound()}
+                        {this.renderDying()}
                         {this.renderBar(san)}
+                        {this.renderSanityToday()}
                         {this.renderSanity()}
                         {this.renderBar(luck)}
                         {this.renderBar(mp)}
